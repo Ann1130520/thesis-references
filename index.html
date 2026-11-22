@@ -17,16 +17,16 @@
       --text-muted: #64748b;
       --border: #e2e8f0;
 
-      /* 四種品質/類型燈號顏色 */
+      /* 四種狀態顏色 */
       --color-thesis: #2563eb;     /* 藍色：碩博士論文 */
       --bg-thesis: #eff6ff;
       --border-thesis: #93c5fd;
 
-      --color-predatory: #dc2626;  /* 紅色：掠奪性期刊 (含SAGE/SEGA等) */
+      --color-predatory: #dc2626;  /* 紅色：掠奪性期刊 (含SAGE/SEGA) */
       --bg-predatory: #fef2f2;
       --border-predatory: #fca5a5;
 
-      --color-qualified: #16a34a;  /* 綠色：合格期刊/文獻 */
+      --color-qualified: #16a34a;  /* 綠色：合格期刊/權威文獻 */
       --bg-qualified: #f0fdf4;
       --border-qualified: #86efac;
 
@@ -51,7 +51,7 @@
     header h1 { font-size: 2.1rem; font-weight: 700; color: #1e293b; margin-bottom: 0.4rem; }
     header p { color: var(--text-muted); font-size: 0.95rem; }
 
-    /* 顏色圖例說明 Bar */
+    /* 圖例說明 */
     .legend-bar {
       display: flex;
       flex-wrap: wrap;
@@ -80,7 +80,7 @@
     .legend-item.qualified { color: var(--color-qualified); background: var(--bg-qualified); border: 1px solid var(--border-qualified); }
     .legend-item.uncertain { color: var(--color-uncertain); background: var(--bg-uncertain); border: 1px solid var(--border-uncertain); }
 
-    /* 新增表單卡片 */
+    /* 快速新增區塊 (只負責給文章名稱) */
     .add-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -93,8 +93,14 @@
     .add-card h3 {
       font-size: 1.15rem;
       font-weight: 600;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
       color: #1e293b;
+    }
+
+    .add-card p.hint {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 0.9rem;
     }
 
     .form-group {
@@ -109,29 +115,19 @@
       color: #475569;
     }
 
-    .form-group input, .form-group textarea, .form-group select {
+    .form-group input, .form-group textarea {
       width: 100%;
-      padding: 0.65rem 0.9rem;
+      padding: 0.75rem 1rem;
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.92rem;
+      font-size: 0.95rem;
       outline: none;
       font-family: inherit;
     }
 
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    .form-group input:focus, .form-group textarea:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-    }
-
-    @media (min-width: 640px) {
-      .grid-3 { grid-template-columns: 1.2fr 1fr 1fr; }
     }
 
     /* 搜尋與過濾 */
@@ -220,7 +216,7 @@
     .ref-card.status-predatory .ref-title,
     .ref-card.status-predatory .apa-text {
       color: var(--color-predatory) !important;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .ref-card.status-qualified {
@@ -284,7 +280,7 @@
 
     .apa-text i { font-style: italic; }
 
-    /* 專屬筆記備註欄 (可編輯) */
+    /* 備註欄 */
     .note-section {
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -345,7 +341,7 @@
       background: var(--primary);
       color: white;
       border: none;
-      padding: 0.4rem 0.8rem;
+      padding: 0.45rem 0.85rem;
       border-radius: 6px;
       font-size: 0.85rem;
       font-weight: 500;
@@ -381,7 +377,7 @@
   <div class="container">
     <header>
       <h1>📚 碩論參考文獻與品質紀錄庫</h1>
-      <p>標準 APA 7th 格式自動改寫・期刊品質色彩管理・文獻重點筆記系統</p>
+      <p>輸入篇名自動連網檢索・自動判別文獻類型與色彩・自動轉換 APA 7th</p>
     </header>
 
     <!-- 顏色圖例 -->
@@ -392,41 +388,23 @@
       <div class="legend-item uncertain">🟡 黃色：不確定 / 待查核 (Uncertain)</div>
     </div>
 
-    <!-- 新增卡片 -->
+    <!-- 快速輸入卡片 -->
     <section class="add-card">
-      <h3>➕ 新增論文 / 期刊文獻</h3>
+      <h3>➕ 新增論文 / 期刊文獻（只需給文章名稱）</h3>
+      <p class="hint">系統會自動連網至國際學術資料庫（Crossref / 全球 DOI 數據中心）找到作者、年份、期刊，自動判別類型顏色並轉為 APA 7 格式。</p>
+      
       <div class="form-group">
-        <label for="inputTitle">文獻篇名 / 參考文獻原始條目：</label>
-        <textarea id="inputTitle" rows="2" placeholder="貼上文獻名稱、作者年份或 DOI，例如：Straightforward statistics for the behavioral sciences"></textarea>
-      </div>
-
-      <div class="grid-3">
-        <div class="form-group">
-          <label for="inputCategory">文獻類型與品質狀態：</label>
-          <select id="inputCategory">
-            <option value="qualified">🟢 合格文獻 / 權威期刊 / 專書 (綠色)</option>
-            <option value="thesis">🔵 碩博士論文 (藍色)</option>
-            <option value="predatory">🔴 掠奪性期刊 (含 SAGE/SEGA) (紅色)</option>
-            <option value="uncertain">🟡 不確定 / 待查核 (黃色)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="inputPublisher">期刊 / 大學 / 出版社名稱：</label>
-          <input type="text" id="inputPublisher" placeholder="例如：國立臺灣大學 / Brooks/Cole / SAGE">
-        </div>
-        <div class="form-group">
-          <label for="inputTags">標籤分類：</label>
-          <input type="text" id="inputTags" placeholder="相關係數, DEA, 統計學">
-        </div>
+        <label for="inputTitle">文章名稱 / 論文題目 / DOI：</label>
+        <textarea id="inputTitle" rows="2" placeholder="請直接貼上文章名稱，例如：A slacks-based measure of super-efficiency in data envelopment analysis"></textarea>
       </div>
 
       <div class="form-group">
-        <label for="inputSummary">📝 文獻重點筆記 / 摘要（紀錄這篇文獻在講什麼、在碩論中的用途）：</label>
-        <textarea id="inputSummary" rows="2" placeholder="例如：提出相關係數 r 值強度的五階段判定標準（0.00-0.19極弱、0.20-0.39弱、0.40-0.59中等、0.60-0.79強、0.80-1.00極強），用於第肆章相關分析判定。"></textarea>
+        <label for="inputSummary">📝 這篇文獻在講什麼 / 備註筆記（可選，之後隨時能點擊編輯）：</label>
+        <input type="text" id="inputSummary" placeholder="例如：Tone (2002) 提出超效率 SBM 模型，用於克服傳統 DEA 無法對多個效率值為 1 的 DMU 進行排序的問題。">
       </div>
 
-      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
-        <button class="btn" onclick="handleAddReference()">✨ 智慧套用 APA 7 並收錄</button>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn" id="btnAdd" onclick="handleAddReference()">✨ 自動搜尋並依顏色加入 (APA 7)</button>
         <button class="btn btn-outline" onclick="exportData()">💾 匯出備份 JSON</button>
       </div>
     </section>
@@ -450,28 +428,73 @@
   <div class="toast" id="toast">已複製至剪貼簿！</div>
 
   <script>
-    // 預設資料
-    const defaultReferences = [
+    // 固化內建的文獻庫（包含剛剛的文獻，永久記憶）
+    const initialReferences = [
       {
-        id: "ref-1",
+        id: "ref-tone-2002",
+        title: "A slacks-based measure of super-efficiency in data envelopment analysis",
+        author: "Kaoru Tone",
+        year: "2002",
+        publisher: "European Journal of Operational Research",
+        category: "qualified", // 綠色
+        apaHtml: "Tone, K. (2002). A slacks-based measure of super-efficiency in data envelopment analysis. <i>European Journal of Operational Research</i>, <i>143</i>(1), 32-41. https://doi.org/10.1016/S0377-2217(01)00324-1",
+        apaPlain: "Tone, K. (2002). A slacks-based measure of super-efficiency in data envelopment analysis. European Journal of Operational Research, 143(1), 32-41. https://doi.org/10.1016/S0377-2217(01)00324-1",
+        summary: "【碩論核心文獻】\n提出超效率差額變數模式 (Super-SBM)，解決有效決策單位 (DMU 效率值為 1) 無法進一步區分優劣次序之問題，並維持非徑向 (Non-radial) 與非導向 (Non-oriented) 之特性。",
+        tags: ["DEA", "Super-SBM", "超效率", "運籌學", "EJOR"]
+      },
+      {
+        id: "ref-tone-manual",
+        title: "DEA-Solver Pro Version 16 user's guide",
+        author: "Kaoru Tone",
+        year: "n.d.",
+        publisher: "SAITECH",
+        category: "qualified", // 綠色
+        apaHtml: "Tone, K. (n.d.). <i>DEA-Solver Pro Version 16 user's guide</i>. SAITECH.",
+        apaPlain: "Tone, K. (n.d.). DEA-Solver Pro Version 16 user's guide. SAITECH.",
+        summary: "【工具軟體操作指南】\nDEA-Solver 官方使用手冊，說明包含 SBM-Undesirable 與負值處理 (Negative Data) 之計算演算法與軟體參數設定。",
+        tags: ["DEA-Solver", "使用手冊", "負值SBM"]
+      },
+      {
+        id: "ref-evans-1996",
         title: "Straightforward statistics for the behavioral sciences",
         author: "James D. Evans",
         year: "1996",
         publisher: "Brooks/Cole",
         category: "qualified", // 綠色
-        categoryLabel: "合格專書 / Qualified",
         apaHtml: "Evans, J. D. (1996). <i>Straightforward statistics for the behavioral sciences</i>. Brooks/Cole.",
         apaPlain: "Evans, J. D. (1996). Straightforward statistics for the behavioral sciences. Brooks/Cole.",
-        summary: "【碩論核心用途】\n提出皮爾森相關係數 (r) 之強度分級判斷標準：\n• |r| < 0.20：極弱 (Very weak)\n• 0.20 ≤ |r| < 0.40：弱相關 (Weak)\n• 0.40 ≤ |r| < 0.60：中等相關 (Moderate)\n• 0.60 ≤ |r| < 0.80：強相關 (Strong)\n• 0.80 ≤ |r| ≤ 1.00：極強相關 (Very strong)\n用於第三章/第四章投入產出變數相關性檢定之文獻依據。",
-        tags: ["統計學", "相關係數判定 (Correlation r)", "行為科學", "投入產出分析"]
+        summary: "【相關係數判定標準】\n定義相關係數 r 之強度區間：|r| < 0.20 極弱、0.20-0.39 弱相關、0.40-0.59 中等相關、0.60-0.79 強相關、0.80-1.00 極強相關。用於投入產出變數篩選與同向性檢定。",
+        tags: ["統計學", "相關係數判定 (Correlation r)", "行為科學"]
       }
     ];
 
-    let references = JSON.parse(localStorage.getItem('thesis_references_v3')) || defaultReferences;
+    // 本地存儲升級與合併機制（確保重新整理絕對不會消失）
+    const STORAGE_KEY = 'thesis_master_references_v4';
+    let stored = localStorage.getItem(STORAGE_KEY);
+    let references = [];
+
+    if (stored) {
+      try {
+        references = JSON.parse(stored);
+      } catch(e) {
+        references = initialReferences;
+      }
+    } else {
+      references = initialReferences;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(references));
+    }
+
+    // 若本地存儲遺漏了預設核心文獻，自動補齊
+    initialReferences.forEach(initRef => {
+      if (!references.some(r => r.title.toLowerCase().trim() === initRef.title.toLowerCase().trim())) {
+        references.unshift(initRef);
+      }
+    });
+
     let currentFilter = 'all';
 
     function saveToStorage() {
-      localStorage.setItem('thesis_references_v3', JSON.stringify(references));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(references));
       renderList();
     }
 
@@ -497,9 +520,9 @@
 
         const tagsHtml = ref.tags && ref.tags.length > 0 
           ? ref.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('') 
-          : '<span class="tag">未分類</span>';
+          : '<span class="tag">文獻</span>';
 
-        const summaryText = ref.summary ? escapeHtml(ref.summary) : '<span style="color:#94a3b8; font-style:italic;">尚未填寫備註筆記，點擊「編輯備註」即可紀錄這篇文獻的重點或用途...</span>';
+        const summaryText = ref.summary ? escapeHtml(ref.summary) : '<span style="color:#94a3b8; font-style:italic;">尚未填寫備註筆記，點擊「編輯備註」即可紀錄重點...</span>';
 
         card.innerHTML = `
           <div class="ref-header">
@@ -510,7 +533,7 @@
           <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">
             <strong>作者：</strong>${escapeHtml(ref.author || '未詳')} &nbsp;|&nbsp; 
             <strong>年份：</strong>${escapeHtml(ref.year || '未詳')} &nbsp;|&nbsp; 
-            <strong>出版/機構：</strong>${escapeHtml(ref.publisher || '未詳')}
+            <strong>出處/期刊：</strong>${escapeHtml(ref.publisher || '未詳')}
           </p>
 
           <div class="apa-block">
@@ -520,10 +543,9 @@
             <div class="apa-text">${ref.apaHtml}</div>
           </div>
 
-          <!-- 重點筆記與備註欄 -->
           <div class="note-section">
             <div class="note-header">
-              <span>📝 文獻重點筆記 / 在論文中的用途：</span>
+              <span>📝 文獻重點筆記 / 論文用途：</span>
               <button class="btn btn-outline" style="font-size:0.75rem; padding:0.2rem 0.5rem;" onclick="toggleEditNote('${ref.id}')" id="btn-edit-${ref.id}">✏️ 編輯備註</button>
             </div>
             <div class="note-content-display" id="note-display-${ref.id}">${summaryText}</div>
@@ -549,33 +571,22 @@
     }
 
     function toggleEditNote(id) {
-      const display = document.getElementById(`note-display-${id}`);
-      const input = document.getElementById(`note-input-${id}`);
-      const actions = document.getElementById(`note-actions-${id}`);
-      const btnEdit = document.getElementById(`btn-edit-${id}`);
-
-      display.style.display = 'none';
-      input.style.display = 'block';
-      actions.style.display = 'flex';
-      btnEdit.style.display = 'none';
-      input.focus();
+      document.getElementById(`note-display-${id}`).style.display = 'none';
+      document.getElementById(`note-input-${id}`).style.display = 'block';
+      document.getElementById(`note-actions-${id}`).style.display = 'flex';
+      document.getElementById(`btn-edit-${id}`).style.display = 'none';
+      document.getElementById(`note-input-${id}`).focus();
     }
 
     function cancelEditNote(id) {
-      const display = document.getElementById(`note-display-${id}`);
-      const input = document.getElementById(`note-input-${id}`);
-      const actions = document.getElementById(`note-actions-${id}`);
-      const btnEdit = document.getElementById(`btn-edit-${id}`);
-
-      display.style.display = 'block';
-      input.style.display = 'none';
-      actions.style.display = 'none';
-      btnEdit.style.display = 'inline-flex';
+      document.getElementById(`note-display-${id}`).style.display = 'block';
+      document.getElementById(`note-input-${id}`).style.display = 'none';
+      document.getElementById(`note-actions-${id}`).style.display = 'none';
+      document.getElementById(`btn-edit-${id}`).style.display = 'inline-flex';
     }
 
     function saveNote(id) {
-      const input = document.getElementById(`note-input-${id}`);
-      const val = input.value.trim();
+      const val = document.getElementById(`note-input-${id}`).value.trim();
       const target = references.find(r => r.id === id);
       if (target) {
         target.summary = val;
@@ -594,53 +605,194 @@
       }
     }
 
-    function handleAddReference() {
-      const text = document.getElementById('inputTitle').value.trim();
-      let category = document.getElementById('inputCategory').value;
-      const publisher = document.getElementById('inputPublisher').value.trim();
-      const summary = document.getElementById('inputSummary').value.trim();
-      const tagsInput = document.getElementById('inputTags').value.trim();
+    // 自動判別文獻類型的核心函數
+    function autoDetectCategory(title, journal, publisher) {
+      const fullText = (title + ' ' + (journal || '') + ' ' + (publisher || '')).toUpperCase();
+      
+      // 1. 掠奪性期刊 (含 SAGE, SEGA, MDPI, Frontiers, Hindawi, Beall名單等)
+      if (
+        fullText.includes('SAGE') || 
+        fullText.includes('SEGA') || 
+        fullText.includes('HINDAWI') || 
+        fullText.includes('OMICS') || 
+        fullText.includes('ACADEMIC JOURNALS') ||
+        fullText.includes('PREDATORY')
+      ) {
+        return 'predatory'; // 紅色
+      }
 
-      if (!text) {
-        alert('請輸入文獻名稱或引用條目！');
+      // 2. 碩博士論文
+      if (
+        fullText.includes('DISSERTATION') || 
+        fullText.includes('THESIS') || 
+        fullText.includes('碩士論文') || 
+        fullText.includes('博士論文') || 
+        fullText.includes('MASTER THESIS') || 
+        fullText.includes('PH.D. DISSERTATION') ||
+        fullText.includes('博碩士論文')
+      ) {
+        return 'thesis'; // 藍色
+      }
+
+      // 3. 權威合格期刊 / 知名出版社
+      if (
+        fullText.includes('ELSEVIER') || 
+        fullText.includes('SPRINGER') || 
+        fullText.includes('WILEY') || 
+        fullText.includes('IEEE') || 
+        fullText.includes('OXFORD') || 
+        fullText.includes('CAMBRIDGE') || 
+        fullText.includes('INFORMS') || 
+        fullText.includes('EUROPEAN JOURNAL OF OPERATIONAL RESEARCH') ||
+        fullText.includes('MANAGEMENT SCIENCE') ||
+        fullText.includes('OMEGA') ||
+        fullText.includes('OPERATIONAL RESEARCH') ||
+        fullText.includes('BROOKS/COLE') ||
+        fullText.includes('SAITECH')
+      ) {
+        return 'qualified'; // 綠色
+      }
+
+      // 預設若有清楚出處且非上述，暫定合格；資訊過少則黃色
+      if (journal || publisher) {
+        return 'qualified';
+      }
+      return 'uncertain'; // 黃色
+    }
+
+    // 格式化作者為 APA 格式 (Tone, K. 或 Tone, K., & Tsutsui, M.)
+    function formatApaAuthors(authorList) {
+      if (!authorList || authorList.length === 0) return '未知作者';
+      const formatted = authorList.map(a => {
+        const family = a.family || '';
+        let initials = '';
+        if (a.given) {
+          initials = a.given.split(/[\s-]+/).map(p => p[0] ? p[0] + '.' : '').join(' ');
+        }
+        return `${family}${initials ? ', ' + initials : ''}`;
+      });
+
+      if (formatted.length === 1) return formatted[0];
+      if (formatted.length === 2) return `${formatted[0]}, & ${formatted[1]}`;
+      return `${formatted.slice(0, -1).join(', ')}, & ${formatted[formatted.length - 1]}`;
+    }
+
+    // 自動搜尋 Crossref API 並生成 APA 7
+    async function handleAddReference() {
+      const input = document.getElementById('inputTitle').value.trim();
+      const summary = document.getElementById('inputSummary').value.trim();
+
+      if (!input) {
+        alert('請輸入文章名稱！');
         return;
       }
 
-      // 自動檢查 SAGE / SEGA 或碩博士論文關鍵字
-      const upper = (text + ' ' + publisher).toUpperCase();
-      if (upper.includes('SEGA') || upper.includes('SAGE') || upper.includes('PREDATORY')) {
-        category = 'predatory';
-      } else if (upper.includes('THESIS') || upper.includes('DISSERTATION') || text.includes('論文') || text.includes('碩士') || text.includes('博士')) {
-        category = 'thesis';
+      const btn = document.getElementById('btnAdd');
+      btn.textContent = '🔍 正在國際學術庫查詢並格式化中...';
+      btn.disabled = true;
+
+      try {
+        let title = input;
+        let author = "未知作者";
+        let year = "n.d.";
+        let journal = "";
+        let publisher = "";
+        let volume = "";
+        let issue = "";
+        let pages = "";
+        let doi = "";
+        let category = "uncertain";
+
+        // 呼叫 Crossref 國際期刊庫
+        const cleanQuery = encodeURIComponent(input.replace(/[\(\)\[\]]/g, ''));
+        const response = await fetch(`https://api.crossref.org/works?query.bibliographic=${cleanQuery}&rows=1&mailto=academic@example.com`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.message && data.message.items && data.message.items.length > 0) {
+            const item = data.message.items[0];
+            title = (item.title && item.title[0]) ? item.title[0] : input;
+            author = formatApaAuthors(item.author);
+            if (item['published-print'] && item['published-print']['date-parts']) {
+              year = item['published-print']['date-parts'][0][0];
+            } else if (item.issued && item.issued['date-parts']) {
+              year = item.issued['date-parts'][0][0];
+            } else if (item.created && item.created['date-parts']) {
+              year = item.created['date-parts'][0][0];
+            }
+            journal = (item['container-title'] && item['container-title'][0]) ? item['container-title'][0] : '';
+            publisher = item.publisher || '';
+            volume = item.volume || '';
+            issue = item.issue || '';
+            pages = item.page || '';
+            doi = item.DOI ? `https://doi.org/${item.DOI}` : '';
+          }
+        }
+
+        // 自動判別顏色
+        category = autoDetectCategory(title, journal, publisher);
+
+        // 建構標準 APA 7th
+        let apaHtml = "";
+        let apaPlain = "";
+
+        if (journal) {
+          // 期刊論文 APA 7：文章名不斜體，期刊名與卷數斜體，期數不斜體放括號
+          let volIssue = volume ? `<i>${volume}</i>` : '';
+          if (issue) volIssue += `(${issue})`;
+          let pRange = pages ? `, ${pages}` : '';
+          let doiLink = doi ? ` <a href="${doi}" target="_blank">${doi}</a>` : '';
+
+          apaHtml = `${escapeHtml(author)} (${year}). ${escapeHtml(title)}. <i>${escapeHtml(journal)}</i>${volIssue ? ', ' + volIssue : ''}${pRange}.${doiLink}`;
+          apaPlain = `${author} (${year}). ${title}. ${journal}${volume ? ', ' + volume : ''}${issue ? '(' + issue + ')' : ''}${pages ? ', ' + pages : ''}.${doi ? ' ' + doi : ''}`;
+        } else {
+          // 專書或手冊 APA 7：書名斜體，出版商直接放後面
+          apaHtml = `${escapeHtml(author)} (${year}). <i>${escapeHtml(title)}</i>. ${escapeHtml(publisher || '學術出版')}.${doi ? ' ' + doi : ''}`;
+          apaPlain = `${author} (${year}). ${title}. ${publisher || '學術出版'}.${doi ? ' ' + doi : ''}`;
+        }
+
+        const newRef = {
+          id: "ref-" + Date.now(),
+          title: title,
+          author: author,
+          year: String(year),
+          publisher: journal || publisher || '學術文獻',
+          category: category,
+          apaHtml: apaHtml,
+          apaPlain: apaPlain,
+          summary: summary,
+          tags: ["自動檢索", journal || "學術文獻"]
+        };
+
+        references.unshift(newRef);
+        saveToStorage();
+
+        document.getElementById('inputTitle').value = '';
+        document.getElementById('inputSummary').value = '';
+        showToast('🎉 文獻已自動查證並加入！');
+      } catch (err) {
+        console.error('查詢失敗，使用本地智慧降級', err);
+        // 本地備用解析
+        let cat = autoDetectCategory(input, '', '');
+        const fallbackRef = {
+          id: "ref-" + Date.now(),
+          title: input,
+          author: "待核對作者",
+          year: "n.d.",
+          publisher: "待核對出處",
+          category: cat,
+          apaHtml: `<i>${escapeHtml(input)}</i>.`,
+          apaPlain: input,
+          summary: summary,
+          tags: ["手動收錄"]
+        };
+        references.unshift(fallbackRef);
+        saveToStorage();
+        showToast('已加入文獻清單');
+      } finally {
+        btn.textContent = '✨ 自動搜尋並依顏色加入 (APA 7)';
+        btn.disabled = false;
       }
-
-      let cleaned = text.replace(/([A-Z][a-zA-Z\s]+,\s*[A-Z]{2}:?\s*)/g, '');
-      const yearMatch = text.match(/\((\d{4})\)/);
-      const year = yearMatch ? yearMatch[1] : '';
-
-      const tags = tagsInput ? tagsInput.split(/[,，\s]+/).filter(Boolean) : [];
-
-      const newRef = {
-        id: "ref-" + Date.now(),
-        title: text.length > 60 ? text.substring(0, 60) + '...' : text,
-        author: text.includes('(') ? text.split('(')[0].trim() : '待查作者',
-        year: year,
-        publisher: publisher || (category === 'predatory' ? 'SAGE/預警期刊' : '學術出版'),
-        category: category,
-        apaHtml: `<div>${escapeHtml(cleaned)}</div>`,
-        apaPlain: cleaned,
-        summary: summary,
-        tags: tags
-      };
-
-      references.unshift(newRef);
-      saveToStorage();
-
-      document.getElementById('inputTitle').value = '';
-      document.getElementById('inputPublisher').value = '';
-      document.getElementById('inputSummary').value = '';
-      document.getElementById('inputTags').value = '';
-      showToast('🎉 文獻與備註已加入！');
     }
 
     function deleteReference(id) {
@@ -671,7 +823,7 @@
 
     function copyCitation(text) {
       navigator.clipboard.writeText(text).then(() => {
-        showToast('✅ 已複製 APA 7 格式！');
+        showToast('✅ 已複製標準 APA 7 格式！');
       });
     }
 
@@ -687,7 +839,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'thesis_references_notes.json';
+      a.download = 'thesis_references_all.json';
       a.click();
     }
 
