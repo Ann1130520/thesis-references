@@ -573,24 +573,73 @@
       }
     ];
 
-    const STORAGE_KEY = 'thesis_master_references_v7';
+    // ⚠️ 永久固定此 KEY，絕對不可再修改版號，否則資料會不見
+    const STORAGE_KEY = 'thesis_references_PERMANENT';
+
+    // 所有歷史舊 key，用於資料遷移搶救
+    const OLD_KEYS = [
+      'thesis_references',
+      'thesis_master_references',
+      'thesis_master_references_v1',
+      'thesis_master_references_v2',
+      'thesis_master_references_v3',
+      'thesis_master_references_v4',
+      'thesis_master_references_v5',
+      'thesis_master_references_v6',
+      'thesis_master_references_v7',
+      'thesis_references_v2',
+      'thesis_references_v3'
+    ];
+
     let references = [];
     let currentQualityFilter = 'all';
     let currentTopicFilter = 'all';
     let currentSort = 'year-desc'; // 預設由新到舊
 
+    // 從所有舊 key 搶救並合併用戶資料
+    function migrateOldData() {
+      let rescued = [];
+      OLD_KEYS.forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const data = JSON.parse(raw);
+            if (Array.isArray(data)) {
+              data.forEach(item => {
+                // 避免重複：用 id 或 title 比對
+                const isDup = rescued.some(r => r.id === item.id || (r.title && item.title && r.title.toLowerCase().trim() === item.title.toLowerCase().trim()));
+                if (!isDup) rescued.push(item);
+              });
+            }
+            localStorage.removeItem(k); // 清除舊 key
+          }
+        } catch(e) {}
+      });
+      return rescued;
+    }
+
     function initStorage() {
+      // 優先讀取永久 key
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         try {
           references = JSON.parse(stored);
         } catch(e) {
-          references = [...defaultReferences];
+          references = [];
         }
-      } else {
-        references = [...defaultReferences];
       }
 
+      // 若永久 key 為空，嘗試從舊 key 搶救資料
+      if (references.length === 0) {
+        references = migrateOldData();
+      } else {
+        // 即使永久 key 有資料，也清理舊 key（避免佔用空間）
+        OLD_KEYS.forEach(k => {
+          try { localStorage.removeItem(k); } catch(e) {}
+        });
+      }
+
+      // 合併預設文獻（只補入不存在的）
       defaultReferences.forEach(d => {
         if (!references.some(r => r.id === d.id || r.title.toLowerCase().trim() === d.title.toLowerCase().trim())) {
           references.push(d);
@@ -953,6 +1002,7 @@
           let pRange = pages ? `, ${pages}` : '';
           let doiLink = doi ? ` <a href="${doi}" target="_blank">${doi}</a>` : '';
 
+          // 注意：journal 已是純文字（&amp; 已還原為 &），用 escapeHtml 再轉回正確顯示
           apaHtml = `${escapeHtml(author)} (${year}). ${escapeHtml(title)}. <i>${escapeHtml(journal)}</i>${volIssue ? ', ' + volIssue : ''}${pRange}.${doiLink}`;
           apaPlain = `${author} (${year}). ${title}. ${journal}${volume ? ', ' + volume : ''}${issue ? '(' + issue + ')' : ''}${pages ? ', ' + pages : ''}.${doi ? ' ' + doi : ''}`;
         } else {
