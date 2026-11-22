@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>學術論文與文獻紀錄庫 | Thesis Reference Hub</title>
+  <title>碩論參考文獻與品質紀錄庫 | Thesis Reference Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -11,16 +11,28 @@
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
-      --primary-light: #eff6ff;
       --bg-main: #f8fafc;
       --bg-card: #ffffff;
       --text-main: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
-      --tag-bg: #e0e7ff;
-      --tag-text: #3730a3;
-      --accent-green: #10b981;
-      --danger: #ef4444;
+
+      /* 四種品質/類型燈號顏色 */
+      --color-thesis: #2563eb;     /* 藍色：碩博士論文 */
+      --bg-thesis: #eff6ff;
+      --border-thesis: #bfdbfe;
+
+      --color-predatory: #dc2626;  /* 紅色：掠奪性期刊 (含SAGE/SEGA等) */
+      --bg-predatory: #fef2f2;
+      --border-predatory: #fecaca;
+
+      --color-qualified: #16a34a;  /* 綠色：合格期刊/文獻 */
+      --bg-qualified: #f0fdf4;
+      --border-qualified: #bbf7d0;
+
+      --color-uncertain: #d97706;  /* 黃色：不確定/待查核 */
+      --bg-uncertain: #fffbeb;
+      --border-uncertain: #fde68a;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,53 +45,42 @@
       padding: 2rem 1rem;
     }
 
-    .container { max-width: 960px; margin: 0 auto; }
+    .container { max-width: 980px; margin: 0 auto; }
 
     header { margin-bottom: 2rem; text-align: center; }
-    header h1 { font-size: 2.1rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    header h1 { font-size: 2.2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
     header p { color: var(--text-muted); font-size: 0.95rem; }
 
-    /* 設定與說明折疊區 */
-    .config-box {
-      background: #f1f5f9;
-      border: 1px dashed #cbd5e1;
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
+    /* 顏色圖例說明 Bar */
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
       margin-bottom: 1.5rem;
-      font-size: 0.875rem;
-    }
-
-    .config-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      font-weight: 600;
-      color: #334155;
-    }
-
-    .config-body {
-      margin-top: 0.75rem;
-      display: none;
-    }
-
-    .config-body.open { display: block; }
-
-    .input-row {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-
-    .input-row input {
-      flex: 1;
-      padding: 0.5rem 0.75rem;
+      padding: 0.75rem 1rem;
+      background: white;
+      border-radius: 10px;
       border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.85rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
 
-    /* 新增文獻表單卡片 */
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .legend-item.thesis { color: var(--color-thesis); background: var(--bg-thesis); border: 1px solid var(--border-thesis); }
+    .legend-item.predatory { color: var(--color-predatory); background: var(--bg-predatory); border: 1px solid var(--border-predatory); }
+    .legend-item.qualified { color: var(--color-qualified); background: var(--bg-qualified); border: 1px solid var(--border-qualified); }
+    .legend-item.uncertain { color: var(--color-uncertain); background: var(--bg-uncertain); border: 1px solid var(--border-uncertain); }
+
+    /* 新增表單卡片 */
     .add-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -93,9 +94,6 @@
       font-size: 1.15rem;
       font-weight: 600;
       margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
       color: #1e293b;
     }
 
@@ -119,7 +117,6 @@
       font-size: 0.95rem;
       outline: none;
       font-family: inherit;
-      transition: border-color 0.2s;
     }
 
     .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
@@ -127,21 +124,21 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
-    .grid-2 {
+    .grid-3 {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
     }
 
     @media (min-width: 640px) {
-      .grid-2 { grid-template-columns: 2fr 1fr; }
+      .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
     }
 
-    /* 搜尋與控制欄 */
+    /* 搜尋與篩選 */
     .controls {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
       margin-bottom: 1.5rem;
       background: var(--bg-card);
       padding: 1rem 1.25rem;
@@ -167,20 +164,30 @@
       outline: none;
     }
 
-    .search-input:focus {
-      border-color: var(--primary);
+    .filter-tabs {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
     }
 
-    .stat-badge {
-      font-size: 0.85rem;
+    .tab-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      background: var(--primary-light);
-      padding: 0.35rem 0.8rem;
+      border: 1px solid var(--border);
       border-radius: 20px;
-      color: var(--primary);
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    /* 文獻清單卡片 */
+    .tab-btn.active {
+      background: #0f172a;
+      color: white;
+      border-color: #0f172a;
+    }
+
+    /* 文獻卡片與顏色標記 */
     .reference-list {
       display: flex;
       flex-direction: column;
@@ -191,14 +198,47 @@
       background: var(--bg-card);
       border-radius: 12px;
       padding: 1.5rem;
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-      transition: transform 0.2s, box-shadow 0.2s;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
       position: relative;
     }
 
-    .ref-card:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    /* 4種狀態邊框與標題文字色彩 */
+    .ref-card.status-thesis {
+      border-color: var(--border-thesis);
+      background: linear-gradient(to right, #f8faff, #ffffff 15%);
+    }
+    .ref-card.status-thesis .ref-title,
+    .ref-card.status-thesis .apa-text {
+      color: var(--color-thesis) !important;
+    }
+
+    .ref-card.status-predatory {
+      border-color: var(--border-predatory);
+      background: linear-gradient(to right, #fff9f9, #ffffff 15%);
+    }
+    .ref-card.status-predatory .ref-title,
+    .ref-card.status-predatory .apa-text {
+      color: var(--color-predatory) !important;
+      font-weight: 600;
+    }
+
+    .ref-card.status-qualified {
+      border-color: var(--border-qualified);
+      background: linear-gradient(to right, #f9fdfa, #ffffff 15%);
+    }
+    .ref-card.status-qualified .ref-title,
+    .ref-card.status-qualified .apa-text {
+      color: var(--color-qualified) !important;
+    }
+
+    .ref-card.status-uncertain {
+      border-color: var(--border-uncertain);
+      background: linear-gradient(to right, #fffef9, #ffffff 15%);
+    }
+    .ref-card.status-uncertain .ref-title,
+    .ref-card.status-uncertain .apa-text {
+      color: var(--color-uncertain) !important;
     }
 
     .ref-header {
@@ -210,47 +250,48 @@
     }
 
     .ref-title {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #0f172a;
+      font-size: 1.18rem;
+      font-weight: 700;
     }
 
-    .ref-type-tag {
+    .badge-status {
       font-size: 0.75rem;
-      font-weight: 600;
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      padding: 0.2rem 0.55rem;
+      font-weight: 700;
+      padding: 0.3rem 0.65rem;
       border-radius: 6px;
       white-space: nowrap;
     }
+
+    .badge-thesis { background: var(--bg-thesis); color: var(--color-thesis); border: 1px solid var(--border-thesis); }
+    .badge-predatory { background: var(--bg-predatory); color: var(--color-predatory); border: 1px solid var(--border-predatory); }
+    .badge-qualified { background: var(--bg-qualified); color: var(--color-qualified); border: 1px solid var(--border-qualified); }
+    .badge-uncertain { background: var(--bg-uncertain); color: var(--color-uncertain); border: 1px solid var(--border-uncertain); }
 
     .apa-block {
       background: #f8fafc;
       padding: 0.9rem 1.1rem;
       border-radius: 8px;
       margin: 0.85rem 0;
-      font-size: 0.93rem;
-      color: #334155;
-      border-left: 4px solid var(--primary);
+      font-size: 0.95rem;
+      border-left: 4px solid var(--border);
     }
 
     .apa-text {
       padding-left: 2em;
       text-indent: -2em;
+      line-height: 1.6;
     }
 
     .apa-text i { font-style: italic; }
 
     .diff-note {
-      font-size: 0.8rem;
-      color: #065f46;
-      background: #ecfdf5;
-      padding: 0.35rem 0.65rem;
+      font-size: 0.825rem;
+      padding: 0.4rem 0.75rem;
       border-radius: 6px;
       margin-top: 0.4rem;
       display: inline-block;
-      border: 1px solid #a7f3d0;
+      background: #f1f5f9;
+      color: #475569;
     }
 
     .ref-footer {
@@ -264,25 +305,10 @@
       border-top: 1px dashed var(--border);
     }
 
-    .tags {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
+    .tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .tag { font-size: 0.75rem; background: #f1f5f9; color: #475569; padding: 0.2rem 0.5rem; border-radius: 4px; }
 
-    .tag {
-      font-size: 0.75rem;
-      background: #f1f5f9;
-      color: #475569;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 0.5rem;
-    }
-
+    .btn-group { display: flex; gap: 0.5rem; }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -295,41 +321,12 @@
       font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.2s;
     }
-
     .btn:hover { background: var(--primary-hover); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: #475569; }
+    .btn-danger { background: transparent; color: #dc2626; border: 1px solid #fecaca; }
+    .btn-danger:hover { background: #fee2e2; }
 
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: #475569;
-    }
-
-    .btn-outline:hover {
-      background: #f1f5f9;
-      color: #1e293b;
-    }
-
-    .btn-danger {
-      background: transparent;
-      color: var(--danger);
-      border: 1px solid #fecaca;
-    }
-
-    .btn-danger:hover {
-      background: #fee2e2;
-    }
-
-    .btn-ai {
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      color: white;
-    }
-    .btn-ai:hover {
-      opacity: 0.92;
-    }
-
-    /* 浮動提示 Toast */
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -346,99 +343,79 @@
       pointer-events: none;
       z-index: 100;
     }
-
     .toast.show { opacity: 1; transform: translateY(0); }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
-    }
   </style>
 </head>
 <body>
 
   <div class="container">
     <header>
-      <h1>📚 學術論文與文獻紀錄庫</h1>
-      <p>碩士論文文獻管理・線上即時加入與 APA 7th 格式生成</p>
+      <h1>📚 碩論參考文獻與品質紀錄庫</h1>
+      <p>標準 APA 7th 格式自動改寫・期刊品質色彩管理系統</p>
     </header>
 
-    <!-- 雲端同步與 Gemini API 設定（可選） -->
-    <div class="config-box">
-      <div class="config-header" onclick="toggleConfig()">
-        <span>⚙️ 智慧自動整理與同步設定（點擊展開 / 收合）</span>
-        <span id="configToggleIcon">▼</span>
-      </div>
-      <div class="config-body" id="configBody">
-        <p style="margin-bottom: 0.5rem; color: #475569;">
-          若您希望在網站上輸入篇名後，直接由 AI 自動連網搜尋作者、年份並產出 APA 7 格式，可輸入免費的 <strong>Google Gemini API Key</strong>：
-        </p>
-        <div class="input-row">
-          <input type="password" id="geminiApiKey" placeholder="貼上你的 Gemini API Key (可選，留空則使用本機智慧解析)">
-          <button class="btn btn-outline" onclick="saveApiKey()">儲存 Key</button>
-        </div>
-        <p style="margin-top: 0.4rem; font-size: 0.75rem; color: #64748b;">
-          * Key 僅儲存於您的瀏覽器 LocalStorage，不會外流。沒有 API Key 時，亦可直接輸入並使用快速格式化功能。
-        </p>
-      </div>
+    <!-- 顏色圖例 -->
+    <div class="legend-bar">
+      <div class="legend-item thesis">🔵 藍色：碩博士論文 (Thesis/Dissertation)</div>
+      <div class="legend-item predatory">🔴 紅色：掠奪性期刊 (含 SAGE/SEGA 等預警)</div>
+      <div class="legend-item qualified">🟢 綠色：合格期刊 / 專書 (Qualified)</div>
+      <div class="legend-item uncertain">🟡 黃色：不確定 / 待查核 (Uncertain)</div>
     </div>
 
-    <!-- 輸入區塊 -->
+    <!-- 新增卡片 -->
     <section class="add-card">
-      <h3>➕ 新增文獻至紀錄庫</h3>
+      <h3>➕ 新增論文 / 期刊文獻</h3>
       <div class="form-group">
-        <label for="inputTitle">輸入文章名稱 / 原始參考文獻條目 / DOI / 網址：</label>
-        <textarea id="inputTitle" rows="2" placeholder="例如：Straightforward statistics for the behavioral sciences 或 直接貼上已有文獻資訊"></textarea>
+        <label for="inputTitle">文獻篇名 / 參考文獻原始條目：</label>
+        <textarea id="inputTitle" rows="2" placeholder="貼上文獻名稱、作者年份或 DOI，例如：Straightforward statistics for the behavioral sciences"></textarea>
       </div>
 
-      <div class="grid-2">
+      <div class="grid-3">
         <div class="form-group">
-          <label for="inputTags">標籤分類（以逗號或空格分隔，如：相關係數, 統計學）：</label>
-          <input type="text" id="inputTags" placeholder="相關係數, 行為科學">
+          <label for="inputCategory">文獻類型與品質狀態：</label>
+          <select id="inputCategory">
+            <option value="qualified">🟢 合格文獻 / 權威期刊 / 專書 (綠色)</option>
+            <option value="thesis">🔵 碩博士論文 (藍色)</option>
+            <option value="predatory">🔴 掠奪性期刊 (含 SAGE/SEGA) (紅色)</option>
+            <option value="uncertain">🟡 不確定 / 待查核 (黃色)</option>
+          </select>
         </div>
         <div class="form-group">
-          <label for="inputType">文獻類型：</label>
-          <select id="inputType">
-            <option value="專書 / Book">專書 / Book</option>
-            <option value="期刊論文 / Journal Article">期刊論文 / Journal Article</option>
-            <option value="研討會論文 / Conference">研討會論文 / Conference</option>
-            <option value="學位論文 / Thesis">學位論文 / Thesis</option>
-            <option value="研究報告 / Report">研究報告 / Report</option>
-            <option value="網頁資料 / Webpage">網頁資料 / Webpage</option>
-          </select>
+          <label for="inputPublisher">期刊 / 大學 / 出版社名稱：</label>
+          <input type="text" id="inputPublisher" placeholder="例如：國立臺灣大學 / Brooks/Cole / SAGE">
+        </div>
+        <div class="form-group">
+          <label for="inputTags">標籤分類：</label>
+          <input type="text" id="inputTags" placeholder="相關係數, DEA, 統計學">
         </div>
       </div>
 
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
-        <button class="btn btn-ai" id="btnAutoGenerate" onclick="handleAddReference()">
-          ✨ 智慧辨識並加入清單 (APA 7)
-        </button>
-        <button class="btn btn-outline" onclick="exportData()">
-          💾 匯出備份 JSON
-        </button>
-        <button class="btn btn-outline" onclick="importDataPrompt()">
-          📂 匯入 JSON
-        </button>
+        <button class="btn" onclick="handleAddReference()">✨ 智慧套用 APA 7 並收錄</button>
+        <button class="btn btn-outline" onclick="exportData()">💾 匯出備份 JSON</button>
       </div>
     </section>
 
     <!-- 搜尋與過濾 -->
     <div class="controls">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 即時搜尋作者、年份、標題、標籤..." oninput="filterReferences()">
-      <div class="stat-badge" id="refCount">統計載入中...</div>
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋作者、篇名、年份、出版社或標籤..." oninput="filterReferences()">
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="setFilter('all', this)">全部</button>
+        <button class="tab-btn" onclick="setFilter('thesis', this)">🔵 碩博論文</button>
+        <button class="tab-btn" onclick="setFilter('predatory', this)">🔴 掠奪性</button>
+        <button class="tab-btn" onclick="setFilter('qualified', this)">🟢 合格</button>
+        <button class="tab-btn" onclick="setFilter('uncertain', this)">🟡 待確認</button>
+      </div>
     </div>
 
-    <!-- 文獻列表 -->
-    <div class="reference-list" id="referenceList">
-      <!-- 動態渲染卡片 -->
-    </div>
+    <!-- 列表 -->
+    <div class="reference-list" id="referenceList"></div>
   </div>
 
   <div class="toast" id="toast">已複製至剪貼簿！</div>
 
   <script>
-    // 預設文獻資料
+    // 預設資料
     const defaultReferences = [
       {
         id: "ref-1",
@@ -446,50 +423,42 @@
         author: "James D. Evans",
         year: "1996",
         publisher: "Brooks/Cole",
-        type: "專書 / Book",
+        category: "qualified", // 綠色：合格專書
+        categoryLabel: "合格專書 / Qualified",
         apaHtml: "Evans, J. D. (1996). <i>Straightforward statistics for the behavioral sciences</i>. Brooks/Cole.",
         apaPlain: "Evans, J. D. (1996). Straightforward statistics for the behavioral sciences. Brooks/Cole.",
-        note: "APA 6th ➜ APA 7th 改寫重點：已去除出版地點 (Pacific Grove, CA)，保留出版社名稱。",
+        note: "APA 7th 已取消出版地點 (Pacific Grove, CA)，保留出版社名稱。",
         tags: ["統計學", "相關係數判定 (Correlation r)", "行為科學"]
       }
     ];
 
-    // 從 localStorage 讀取或初始化
-    let references = JSON.parse(localStorage.getItem('thesis_references')) || defaultReferences;
+    let references = JSON.parse(localStorage.getItem('thesis_references_v2')) || defaultReferences;
+    let currentFilter = 'all';
 
     function saveToStorage() {
-      localStorage.setItem('thesis_references', JSON.stringify(references));
+      localStorage.setItem('thesis_references_v2', JSON.stringify(references));
       renderList();
     }
 
-    function toggleConfig() {
-      const body = document.getElementById('configBody');
-      const icon = document.getElementById('configToggleIcon');
-      body.classList.toggle('open');
-      icon.textContent = body.classList.contains('open') ? '▲' : '▼';
+    function setFilter(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterReferences();
     }
 
-    function saveApiKey() {
-      const key = document.getElementById('geminiApiKey').value.trim();
-      localStorage.setItem('gemini_api_key', key);
-      showToast('API Key 已儲存！');
-    }
-
-    // 渲染文獻列表
     function renderList() {
       const container = document.getElementById('referenceList');
       container.innerHTML = '';
 
-      if (references.length === 0) {
-        container.innerHTML = `<div class="empty-state">目前尚未收錄文獻，請在上方輸入篇名加入！</div>`;
-        document.getElementById('refCount').textContent = `已收錄 0 篇文獻`;
-        return;
-      }
-
-      references.forEach((ref, index) => {
+      references.forEach(ref => {
         const card = document.createElement('article');
-        card.className = 'ref-card';
-        card.setAttribute('data-search', `${ref.title} ${ref.author} ${ref.year} ${ref.tags ? ref.tags.join(' ') : ''} ${ref.type}`);
+        card.className = `ref-card status-${ref.category}`;
+        card.setAttribute('data-category', ref.category);
+        card.setAttribute('data-search', `${ref.title} ${ref.author} ${ref.year} ${ref.publisher} ${ref.tags ? ref.tags.join(' ') : ''}`);
+
+        let badgeClass = `badge-${ref.category}`;
+        let statusBadgeText = getCategoryBadgeText(ref.category);
 
         const tagsHtml = ref.tags && ref.tags.length > 0 
           ? ref.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('') 
@@ -498,17 +467,17 @@
         card.innerHTML = `
           <div class="ref-header">
             <h2 class="ref-title">${escapeHtml(ref.title)}</h2>
-            <span class="ref-type-tag">${escapeHtml(ref.type || '文獻')}</span>
+            <span class="badge-status ${badgeClass}">${statusBadgeText}</span>
           </div>
 
           <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">
             <strong>作者：</strong>${escapeHtml(ref.author || '未詳')} &nbsp;|&nbsp; 
             <strong>年份：</strong>${escapeHtml(ref.year || '未詳')} &nbsp;|&nbsp; 
-            <strong>出處/出版社：</strong>${escapeHtml(ref.publisher || '未詳')}
+            <strong>出版/機構：</strong>${escapeHtml(ref.publisher || '未詳')}
           </p>
 
           <div class="apa-block">
-            <div style="font-size: 0.72rem; font-weight: 700; color: var(--primary); margin-bottom: 0.35rem;">
+            <div style="font-size: 0.72rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text-muted);">
               APA 7th Edition 引用格式：
             </div>
             <div class="apa-text">${ref.apaHtml}</div>
@@ -527,152 +496,96 @@
         container.appendChild(card);
       });
 
-      document.getElementById('refCount').textContent = `已收錄 ${references.length} 篇文獻`;
       filterReferences();
     }
 
-    // 新增文獻邏輯（整合本機智能正則 + Gemini API）
-    async function handleAddReference() {
-      const input = document.getElementById('inputTitle').value.trim();
-      const tagsInput = document.getElementById('inputTags').value.trim();
-      const type = document.getElementById('inputType').value;
-      const apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('geminiApiKey').value.trim();
+    function getCategoryBadgeText(cat) {
+      switch(cat) {
+        case 'thesis': return '🔵 碩博士論文';
+        case 'predatory': return '🔴 掠奪性期刊 / 預警';
+        case 'qualified': return '🟢 合格期刊 / 專書';
+        case 'uncertain': return '🟡 不確定 / 待查核';
+        default: return '文獻';
+      }
+    }
 
-      if (!input) {
-        alert('請輸入文獻名稱或條目內容！');
+    function handleAddReference() {
+      const text = document.getElementById('inputTitle').value.trim();
+      let category = document.getElementById('inputCategory').value;
+      const publisher = document.getElementById('inputPublisher').value.trim();
+      const tagsInput = document.getElementById('inputTags').value.trim();
+
+      if (!text) {
+        alert('請輸入文獻名稱或引用條目！');
         return;
       }
 
-      const btn = document.getElementById('btnAutoGenerate');
-      btn.textContent = '⏳ 處理中...';
-      btn.disabled = true;
+      // 自動檢查 SAGE / SEGA 或碩博士論文關鍵字
+      const upper = (text + ' ' + publisher).toUpperCase();
+      if (upper.includes('SEGA') || upper.includes('SAGE') || upper.includes('PREDATORY')) {
+        category = 'predatory';
+      } else if (upper.includes('THESIS') || upper.includes('DISSERTATION') || text.includes('論文') || text.includes('碩士') || text.includes('博士')) {
+        category = 'thesis';
+      }
+
+      // 自動去除 APA 6th 地點格式
+      let cleaned = text.replace(/([A-Z][a-zA-Z\s]+,\s*[A-Z]{2}:?\s*)/g, '');
+      const yearMatch = text.match(/\((\d{4})\)/);
+      const year = yearMatch ? yearMatch[1] : '';
 
       const tags = tagsInput ? tagsInput.split(/[,，\s]+/).filter(Boolean) : [];
 
-      try {
-        let newRef = null;
-
-        // 若使用者有設定 Gemini API Key，直接由 LLM 連網智慧產出 APA 7
-        if (apiKey) {
-          newRef = await fetchApaFromGemini(input, type, apiKey, tags);
-        }
-
-        // 若無 API Key 或 API 呼叫失敗，以本地解析器處理
-        if (!newRef) {
-          newRef = parseLocally(input, type, tags);
-        }
-
-        references.unshift(newRef);
-        saveToStorage();
-
-        document.getElementById('inputTitle').value = '';
-        document.getElementById('inputTags').value = '';
-        showToast('🎉 文獻已成功加入並轉為 APA 7 格式！');
-      } catch (err) {
-        console.error(err);
-        alert('解析發生錯誤：' + err.message);
-      } finally {
-        btn.textContent = '✨ 智慧辨識並加入清單 (APA 7)';
-        btn.disabled = false;
-      }
-    }
-
-    // 本機簡易解析（支援常見 APA 格式轉 APA 7）
-    function parseLocally(text, type, tags) {
-      // 檢查是否包含舊版 APA 6th 的城市地名出版商 (City, ST: Publisher)
-      let cleaned = text;
-      let note = "";
-      
-      const cityRegex = /([A-Z][a-zA-Z\s]+,\s*[A-Z]{2}:?\s*)/g;
-      if (cityRegex.test(cleaned)) {
-        cleaned = cleaned.replace(cityRegex, '');
-        note = "自動移除 APA 6th 地名標記，轉換為 APA 7 規範格式。";
-      }
-
-      // 嘗試抓年份 (YYYY)
-      const yearMatch = text.match(/\((\d{4})\)/);
-      const year = yearMatch ? yearMatch[1] : new Date().getFullYear().toString();
-
-      // 嘗試切作者
-      let author = "未知作者";
-      let title = text;
-      let publisher = "未知出處";
-
-      if (text.includes('(')) {
-        const parts = text.split('(');
-        author = parts[0].trim();
-      }
-
-      return {
+      const newRef = {
         id: "ref-" + Date.now(),
-        title: text.length > 50 ? text.substring(0, 50) + "..." : text,
-        author: author,
+        title: text.length > 60 ? text.substring(0, 60) + '...' : text,
+        author: text.includes('(') ? text.split('(')[0].trim() : '待查作者',
         year: year,
-        publisher: publisher,
-        type: type,
+        publisher: publisher || (category === 'predatory' ? 'SAGE/預警期刊' : '學術出版'),
+        category: category,
         apaHtml: `<div>${escapeHtml(cleaned)}</div>`,
         apaPlain: cleaned,
-        note: note || "本地直接建立。建議核對作者與書名/期刊名斜體。",
+        note: category === 'predatory' ? '⚠️ 注意：此文獻為掠奪性期刊/預警出版社，論文撰寫時強烈建議避免引用！' : '已依 APA 7th 格式整理。',
         tags: tags
       };
-    }
 
-    // 透過 Gemini API 線上直接找齊資訊並格式化為 APA 7
-    async function fetchApaFromGemini(query, type, apiKey, tags) {
-      const prompt = `你是一位學術文獻專家。請根據使用者輸入的文獻名稱或片斷：\n"${query}"\n` +
-        `文獻類型為：${type}\n` +
-        `請查證該文獻，並嚴格按照【APA 第 7 版 (APA 7th Edition)】規範產生資訊。\n` +
-        `請直接回傳純 JSON 格式，格式如下：\n` +
-        `{\n` +
-        `  "title": "文章或書籍正式完整英文/中文名稱",\n` +
-        `  "author": "作者全名或標準縮寫 (例如 Evans, J. D.)",\n` +
-        `  "year": "出版年份 (例如 1996)",\n` +
-        `  "publisher": "出版社或期刊名稱",\n` +
-        `  "apaHtml": "APA 7格式 HTML (書名或期刊名需用 <i>斜體</i>，注意 APA 7 不保留出版地)",\n` +
-        `  "apaPlain": "APA 7格式純文字",\n` +
-        `  "note": "APA 7 重點說明或與舊版差異"\n` +
-        `}`;
+      references.unshift(newRef);
+      saveToStorage();
 
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: "application/json" }
-        })
-      });
-
-      if (!res.ok) throw new Error("Gemini API 回應錯誤：" + res.statusText);
-      const data = await res.json();
-      const rawJson = data.candidates[0].content.parts[0].text;
-      const parsed = JSON.parse(rawJson);
-
-      return {
-        id: "ref-" + Date.now(),
-        title: parsed.title || query,
-        author: parsed.author || "未知",
-        year: parsed.year || "",
-        publisher: parsed.publisher || "",
-        type: type,
-        apaHtml: parsed.apaHtml,
-        apaPlain: parsed.apaPlain,
-        note: parsed.note || "",
-        tags: tags
-      };
+      document.getElementById('inputTitle').value = '';
+      document.getElementById('inputPublisher').value = '';
+      document.getElementById('inputTags').value = '';
+      showToast('🎉 文獻已加入並標記顏色！');
     }
 
     function deleteReference(id) {
-      if (!confirm('確定要刪除這筆文獻紀錄嗎？')) return;
+      if (!confirm('確定刪除此筆文獻？')) return;
       references = references.filter(r => r.id !== id);
       saveToStorage();
-      showToast('文獻已刪除');
+      showToast('已刪除文獻');
+    }
+
+    function filterReferences() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.ref-card');
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const search = card.getAttribute('data-search').toLowerCase();
+
+        const matchCat = (currentFilter === 'all') || (cat === currentFilter);
+        const matchSearch = search.includes(q);
+
+        if (matchCat && matchSearch) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
     }
 
     function copyCitation(text) {
       navigator.clipboard.writeText(text).then(() => {
-        showToast('✅ 已複製 APA 7 格式到剪貼簿！');
-      }).catch(err => {
-        console.error('複製失敗:', err);
+        showToast('✅ 已複製 APA 7 格式！');
       });
     }
 
@@ -683,78 +596,16 @@
       setTimeout(() => { toast.classList.remove('show'); }, 2500);
     }
 
-    function filterReferences() {
-      const q = document.getElementById('searchInput').value.toLowerCase().trim();
-      const cards = document.querySelectorAll('.ref-card');
-      let visibleCount = 0;
-
-      cards.forEach(card => {
-        const searchText = (card.getAttribute('data-search') + ' ' + card.innerText).toLowerCase();
-        if (searchText.includes(q)) {
-          card.style.display = 'block';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      document.getElementById('refCount').textContent = `顯示 ${visibleCount} / ${cards.length} 篇文獻`;
-    }
-
-    // 匯出與匯入功能（方便跨裝置同步與備份）
     function exportData() {
       const blob = new Blob([JSON.stringify(references, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `thesis_references_${new Date().toISOString().slice(0,10)}.json`;
+      a.download = 'references.json';
       a.click();
-      URL.revokeObjectURL(url);
     }
 
-    function importDataPrompt() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json';
-      input.onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = event => {
-          try {
-            const imported = JSON.parse(event.target.result);
-            if (Array.isArray(imported)) {
-              references = imported;
-              saveToStorage();
-              showToast('文獻資料已成功匯入！');
-            } else {
-              alert('JSON 格式不符！');
-            }
-          } catch(err) {
-            alert('解析失敗：' + err.message);
-          }
-        };
-        reader.readAsText(file);
-      };
-      input.click();
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-
-    function escapeQuote(str) {
-      if (!str) return '';
-      return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    }
-
-    // 初始化頁面
     document.addEventListener('DOMContentLoaded', () => {
-      const savedKey = localStorage.getItem('gemini_api_key');
-      if (savedKey) {
-        document.getElementById('geminiApiKey').value = savedKey;
-      }
       renderList();
     });
   </script>
