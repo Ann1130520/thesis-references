@@ -20,19 +20,19 @@
       /* 四種品質/類型燈號顏色 */
       --color-thesis: #2563eb;     /* 藍色：碩博士論文 */
       --bg-thesis: #eff6ff;
-      --border-thesis: #bfdbfe;
+      --border-thesis: #93c5fd;
 
       --color-predatory: #dc2626;  /* 紅色：掠奪性期刊 (含SAGE/SEGA等) */
       --bg-predatory: #fef2f2;
-      --border-predatory: #fecaca;
+      --border-predatory: #fca5a5;
 
       --color-qualified: #16a34a;  /* 綠色：合格期刊/文獻 */
       --bg-qualified: #f0fdf4;
-      --border-qualified: #bbf7d0;
+      --border-qualified: #86efac;
 
       --color-uncertain: #d97706;  /* 黃色：不確定/待查核 */
       --bg-uncertain: #fffbeb;
-      --border-uncertain: #fde68a;
+      --border-uncertain: #fcd34d;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,8 +47,8 @@
 
     .container { max-width: 980px; margin: 0 auto; }
 
-    header { margin-bottom: 2rem; text-align: center; }
-    header h1 { font-size: 2.2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+    header { margin-bottom: 1.5rem; text-align: center; }
+    header h1 { font-size: 2.1rem; font-weight: 700; color: #1e293b; margin-bottom: 0.4rem; }
     header p { color: var(--text-muted); font-size: 0.95rem; }
 
     /* 顏色圖例說明 Bar */
@@ -56,7 +56,7 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 0.75rem;
+      gap: 0.6rem;
       margin-bottom: 1.5rem;
       padding: 0.75rem 1rem;
       background: white;
@@ -68,10 +68,10 @@
     .legend-item {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
       font-size: 0.85rem;
       font-weight: 600;
-      padding: 0.3rem 0.65rem;
+      padding: 0.25rem 0.65rem;
       border-radius: 6px;
     }
 
@@ -98,23 +98,23 @@
     }
 
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 0.9rem;
     }
 
     .form-group label {
       display: block;
       font-size: 0.85rem;
       font-weight: 600;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.3rem;
       color: #475569;
     }
 
     .form-group input, .form-group textarea, .form-group select {
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.65rem 0.9rem;
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       outline: none;
       font-family: inherit;
     }
@@ -127,21 +127,21 @@
     .grid-3 {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     @media (min-width: 640px) {
-      .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+      .grid-3 { grid-template-columns: 1.2fr 1fr 1fr; }
     }
 
-    /* 搜尋與篩選 */
+    /* 搜尋與過濾 */
     .controls {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
       margin-bottom: 1.5rem;
       background: var(--bg-card);
-      padding: 1rem 1.25rem;
+      padding: 0.85rem 1.25rem;
       border-radius: 12px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       border: 1px solid var(--border);
@@ -157,7 +157,7 @@
 
     .search-input {
       flex: 1;
-      padding: 0.65rem 1rem;
+      padding: 0.6rem 0.9rem;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 0.92rem;
@@ -166,12 +166,12 @@
 
     .filter-tabs {
       display: flex;
-      gap: 0.4rem;
+      gap: 0.35rem;
       flex-wrap: wrap;
     }
 
     .tab-btn {
-      padding: 0.35rem 0.75rem;
+      padding: 0.3rem 0.7rem;
       font-size: 0.8rem;
       font-weight: 600;
       border: 1px solid var(--border);
@@ -187,7 +187,7 @@
       border-color: #0f172a;
     }
 
-    /* 文獻卡片與顏色標記 */
+    /* 文獻列表卡片 */
     .reference-list {
       display: flex;
       flex-direction: column;
@@ -199,14 +199,14 @@
       border-radius: 12px;
       padding: 1.5rem;
       border: 2px solid transparent;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
       position: relative;
     }
 
     /* 4種狀態邊框與標題文字色彩 */
     .ref-card.status-thesis {
       border-color: var(--border-thesis);
-      background: linear-gradient(to right, #f8faff, #ffffff 15%);
+      background: linear-gradient(to right, #f8faff, #ffffff 18%);
     }
     .ref-card.status-thesis .ref-title,
     .ref-card.status-thesis .apa-text {
@@ -215,7 +215,7 @@
 
     .ref-card.status-predatory {
       border-color: var(--border-predatory);
-      background: linear-gradient(to right, #fff9f9, #ffffff 15%);
+      background: linear-gradient(to right, #fff9f9, #ffffff 18%);
     }
     .ref-card.status-predatory .ref-title,
     .ref-card.status-predatory .apa-text {
@@ -225,7 +225,7 @@
 
     .ref-card.status-qualified {
       border-color: var(--border-qualified);
-      background: linear-gradient(to right, #f9fdfa, #ffffff 15%);
+      background: linear-gradient(to right, #f9fdfa, #ffffff 18%);
     }
     .ref-card.status-qualified .ref-title,
     .ref-card.status-qualified .apa-text {
@@ -234,7 +234,7 @@
 
     .ref-card.status-uncertain {
       border-color: var(--border-uncertain);
-      background: linear-gradient(to right, #fffef9, #ffffff 15%);
+      background: linear-gradient(to right, #fffef9, #ffffff 18%);
     }
     .ref-card.status-uncertain .ref-title,
     .ref-card.status-uncertain .apa-text {
@@ -245,7 +245,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       gap: 1rem;
     }
 
@@ -257,7 +257,7 @@
     .badge-status {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 0.3rem 0.65rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 6px;
       white-space: nowrap;
     }
@@ -269,9 +269,9 @@
 
     .apa-block {
       background: #f8fafc;
-      padding: 0.9rem 1.1rem;
+      padding: 0.85rem 1rem;
       border-radius: 8px;
-      margin: 0.85rem 0;
+      margin: 0.75rem 0;
       font-size: 0.95rem;
       border-left: 4px solid var(--border);
     }
@@ -284,14 +284,43 @@
 
     .apa-text i { font-style: italic; }
 
-    .diff-note {
+    /* 專屬筆記備註欄 (可編輯) */
+    .note-section {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
       font-size: 0.825rem;
-      padding: 0.4rem 0.75rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .note-content-display {
+      font-size: 0.9rem;
+      color: #1e293b;
+      white-space: pre-wrap;
+      line-height: 1.55;
+      min-height: 24px;
+    }
+
+    .note-textarea {
+      width: 100%;
+      min-height: 70px;
+      padding: 0.5rem;
+      border: 1px solid #cbd5e1;
       border-radius: 6px;
-      margin-top: 0.4rem;
-      display: inline-block;
-      background: #f1f5f9;
-      color: #475569;
+      font-size: 0.9rem;
+      font-family: inherit;
+      display: none;
+      margin-bottom: 0.4rem;
     }
 
     .ref-footer {
@@ -300,7 +329,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 0.75rem;
-      margin-top: 0.75rem;
+      margin-top: 0.85rem;
       padding-top: 0.75rem;
       border-top: 1px dashed var(--border);
     }
@@ -308,7 +337,7 @@
     .tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
     .tag { font-size: 0.75rem; background: #f1f5f9; color: #475569; padding: 0.2rem 0.5rem; border-radius: 4px; }
 
-    .btn-group { display: flex; gap: 0.5rem; }
+    .btn-group { display: flex; gap: 0.4rem; }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -316,7 +345,7 @@
       background: var(--primary);
       color: white;
       border: none;
-      padding: 0.45rem 0.85rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 6px;
       font-size: 0.85rem;
       font-weight: 500;
@@ -324,6 +353,7 @@
     }
     .btn:hover { background: var(--primary-hover); }
     .btn-outline { background: transparent; border: 1px solid var(--border); color: #475569; }
+    .btn-outline:hover { background: #f1f5f9; }
     .btn-danger { background: transparent; color: #dc2626; border: 1px solid #fecaca; }
     .btn-danger:hover { background: #fee2e2; }
 
@@ -351,7 +381,7 @@
   <div class="container">
     <header>
       <h1>📚 碩論參考文獻與品質紀錄庫</h1>
-      <p>標準 APA 7th 格式自動改寫・期刊品質色彩管理系統</p>
+      <p>標準 APA 7th 格式自動改寫・期刊品質色彩管理・文獻重點筆記系統</p>
     </header>
 
     <!-- 顏色圖例 -->
@@ -390,6 +420,11 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="inputSummary">📝 文獻重點筆記 / 摘要（紀錄這篇文獻在講什麼、在碩論中的用途）：</label>
+        <textarea id="inputSummary" rows="2" placeholder="例如：提出相關係數 r 值強度的五階段判定標準（0.00-0.19極弱、0.20-0.39弱、0.40-0.59中等、0.60-0.79強、0.80-1.00極強），用於第肆章相關分析判定。"></textarea>
+      </div>
+
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem;">
         <button class="btn" onclick="handleAddReference()">✨ 智慧套用 APA 7 並收錄</button>
         <button class="btn btn-outline" onclick="exportData()">💾 匯出備份 JSON</button>
@@ -398,7 +433,7 @@
 
     <!-- 搜尋與過濾 -->
     <div class="controls">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋作者、篇名、年份、出版社或標籤..." oninput="filterReferences()">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋作者、篇名、年份、出版社、標籤或筆記內容..." oninput="filterReferences()">
       <div class="filter-tabs">
         <button class="tab-btn active" onclick="setFilter('all', this)">全部</button>
         <button class="tab-btn" onclick="setFilter('thesis', this)">🔵 碩博論文</button>
@@ -423,20 +458,20 @@
         author: "James D. Evans",
         year: "1996",
         publisher: "Brooks/Cole",
-        category: "qualified", // 綠色：合格專書
+        category: "qualified", // 綠色
         categoryLabel: "合格專書 / Qualified",
         apaHtml: "Evans, J. D. (1996). <i>Straightforward statistics for the behavioral sciences</i>. Brooks/Cole.",
         apaPlain: "Evans, J. D. (1996). Straightforward statistics for the behavioral sciences. Brooks/Cole.",
-        note: "APA 7th 已取消出版地點 (Pacific Grove, CA)，保留出版社名稱。",
-        tags: ["統計學", "相關係數判定 (Correlation r)", "行為科學"]
+        summary: "【碩論核心用途】\n提出皮爾森相關係數 (r) 之強度分級判斷標準：\n• |r| < 0.20：極弱 (Very weak)\n• 0.20 ≤ |r| < 0.40：弱相關 (Weak)\n• 0.40 ≤ |r| < 0.60：中等相關 (Moderate)\n• 0.60 ≤ |r| < 0.80：強相關 (Strong)\n• 0.80 ≤ |r| ≤ 1.00：極強相關 (Very strong)\n用於第三章/第四章投入產出變數相關性檢定之文獻依據。",
+        tags: ["統計學", "相關係數判定 (Correlation r)", "行為科學", "投入產出分析"]
       }
     ];
 
-    let references = JSON.parse(localStorage.getItem('thesis_references_v2')) || defaultReferences;
+    let references = JSON.parse(localStorage.getItem('thesis_references_v3')) || defaultReferences;
     let currentFilter = 'all';
 
     function saveToStorage() {
-      localStorage.setItem('thesis_references_v2', JSON.stringify(references));
+      localStorage.setItem('thesis_references_v3', JSON.stringify(references));
       renderList();
     }
 
@@ -455,7 +490,7 @@
         const card = document.createElement('article');
         card.className = `ref-card status-${ref.category}`;
         card.setAttribute('data-category', ref.category);
-        card.setAttribute('data-search', `${ref.title} ${ref.author} ${ref.year} ${ref.publisher} ${ref.tags ? ref.tags.join(' ') : ''}`);
+        card.setAttribute('data-search', `${ref.title} ${ref.author} ${ref.year} ${ref.publisher} ${ref.summary || ''} ${ref.tags ? ref.tags.join(' ') : ''}`);
 
         let badgeClass = `badge-${ref.category}`;
         let statusBadgeText = getCategoryBadgeText(ref.category);
@@ -463,6 +498,8 @@
         const tagsHtml = ref.tags && ref.tags.length > 0 
           ? ref.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('') 
           : '<span class="tag">未分類</span>';
+
+        const summaryText = ref.summary ? escapeHtml(ref.summary) : '<span style="color:#94a3b8; font-style:italic;">尚未填寫備註筆記，點擊「編輯備註」即可紀錄這篇文獻的重點或用途...</span>';
 
         card.innerHTML = `
           <div class="ref-header">
@@ -483,7 +520,19 @@
             <div class="apa-text">${ref.apaHtml}</div>
           </div>
 
-          ${ref.note ? `<div class="diff-note">💡 ${escapeHtml(ref.note)}</div>` : ''}
+          <!-- 重點筆記與備註欄 -->
+          <div class="note-section">
+            <div class="note-header">
+              <span>📝 文獻重點筆記 / 在論文中的用途：</span>
+              <button class="btn btn-outline" style="font-size:0.75rem; padding:0.2rem 0.5rem;" onclick="toggleEditNote('${ref.id}')" id="btn-edit-${ref.id}">✏️ 編輯備註</button>
+            </div>
+            <div class="note-content-display" id="note-display-${ref.id}">${summaryText}</div>
+            <textarea class="note-textarea" id="note-input-${ref.id}">${escapeHtml(ref.summary || '')}</textarea>
+            <div id="note-actions-${ref.id}" style="display:none; gap:0.4rem; justify-content:flex-end;">
+              <button class="btn" style="font-size:0.75rem; padding:0.25rem 0.6rem;" onclick="saveNote('${ref.id}')">💾 儲存筆記</button>
+              <button class="btn btn-outline" style="font-size:0.75rem; padding:0.25rem 0.6rem;" onclick="cancelEditNote('${ref.id}')">取消</button>
+            </div>
+          </div>
 
           <div class="ref-footer">
             <div class="tags">${tagsHtml}</div>
@@ -497,6 +546,42 @@
       });
 
       filterReferences();
+    }
+
+    function toggleEditNote(id) {
+      const display = document.getElementById(`note-display-${id}`);
+      const input = document.getElementById(`note-input-${id}`);
+      const actions = document.getElementById(`note-actions-${id}`);
+      const btnEdit = document.getElementById(`btn-edit-${id}`);
+
+      display.style.display = 'none';
+      input.style.display = 'block';
+      actions.style.display = 'flex';
+      btnEdit.style.display = 'none';
+      input.focus();
+    }
+
+    function cancelEditNote(id) {
+      const display = document.getElementById(`note-display-${id}`);
+      const input = document.getElementById(`note-input-${id}`);
+      const actions = document.getElementById(`note-actions-${id}`);
+      const btnEdit = document.getElementById(`btn-edit-${id}`);
+
+      display.style.display = 'block';
+      input.style.display = 'none';
+      actions.style.display = 'none';
+      btnEdit.style.display = 'inline-flex';
+    }
+
+    function saveNote(id) {
+      const input = document.getElementById(`note-input-${id}`);
+      const val = input.value.trim();
+      const target = references.find(r => r.id === id);
+      if (target) {
+        target.summary = val;
+        saveToStorage();
+        showToast('📝 筆記已成功儲存！');
+      }
     }
 
     function getCategoryBadgeText(cat) {
@@ -513,6 +598,7 @@
       const text = document.getElementById('inputTitle').value.trim();
       let category = document.getElementById('inputCategory').value;
       const publisher = document.getElementById('inputPublisher').value.trim();
+      const summary = document.getElementById('inputSummary').value.trim();
       const tagsInput = document.getElementById('inputTags').value.trim();
 
       if (!text) {
@@ -528,7 +614,6 @@
         category = 'thesis';
       }
 
-      // 自動去除 APA 6th 地點格式
       let cleaned = text.replace(/([A-Z][a-zA-Z\s]+,\s*[A-Z]{2}:?\s*)/g, '');
       const yearMatch = text.match(/\((\d{4})\)/);
       const year = yearMatch ? yearMatch[1] : '';
@@ -544,7 +629,7 @@
         category: category,
         apaHtml: `<div>${escapeHtml(cleaned)}</div>`,
         apaPlain: cleaned,
-        note: category === 'predatory' ? '⚠️ 注意：此文獻為掠奪性期刊/預警出版社，論文撰寫時強烈建議避免引用！' : '已依 APA 7th 格式整理。',
+        summary: summary,
         tags: tags
       };
 
@@ -553,8 +638,9 @@
 
       document.getElementById('inputTitle').value = '';
       document.getElementById('inputPublisher').value = '';
+      document.getElementById('inputSummary').value = '';
       document.getElementById('inputTags').value = '';
-      showToast('🎉 文獻已加入並標記顏色！');
+      showToast('🎉 文獻與備註已加入！');
     }
 
     function deleteReference(id) {
@@ -601,7 +687,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'references.json';
+      a.download = 'thesis_references_notes.json';
       a.click();
     }
 
