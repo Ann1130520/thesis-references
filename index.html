@@ -130,40 +130,90 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
-    /* 搜尋與過濾 */
+    /* 搜尋與進階控制欄 */
     .controls {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 1rem;
       margin-bottom: 1.5rem;
       background: var(--bg-card);
-      padding: 0.85rem 1.25rem;
+      padding: 1rem 1.25rem;
       border-radius: 12px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       border: 1px solid var(--border);
     }
 
+    .control-row-1 {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
     @media (min-width: 640px) {
-      .controls {
+      .control-row-1 {
         flex-direction: row;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
       }
     }
 
     .search-input {
       flex: 1;
-      padding: 0.6rem 0.9rem;
+      padding: 0.65rem 0.9rem;
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 0.92rem;
       outline: none;
     }
 
-    .filter-tabs {
+    .sort-box {
       display: flex;
-      gap: 0.35rem;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .sort-select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      outline: none;
+      background: white;
+      cursor: pointer;
+    }
+
+    .control-row-2 {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      border-top: 1px dashed var(--border);
+      padding-top: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .control-row-2 {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
       flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #64748b;
+      margin-right: 0.2rem;
     }
 
     .tab-btn {
@@ -248,6 +298,23 @@
     .ref-title {
       font-size: 1.18rem;
       font-weight: 700;
+    }
+
+    .header-badges {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge-year {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
     }
 
     .badge-status {
@@ -377,7 +444,7 @@
   <div class="container">
     <header>
       <h1>📚 碩論參考文獻與品質紀錄庫</h1>
-      <p>輸入篇名自動解析出處・自動判別文獻類型與色彩・標準 APA 7th 格式生成</p>
+      <p>年份自動排序・文獻品質色彩管理・主題標籤智慧分類・標準 APA 7th 格式</p>
     </header>
 
     <!-- 顏色圖例 -->
@@ -409,15 +476,41 @@
       </div>
     </section>
 
-    <!-- 搜尋與過濾 -->
+    <!-- 搜尋與進階控制欄 (年份排序 + 多維度分類) -->
     <div class="controls">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋作者、篇名、年份、出版社、標籤或筆記內容..." oninput="filterReferences()">
-      <div class="filter-tabs">
-        <button class="tab-btn active" onclick="setFilter('all', this)">全部</button>
-        <button class="tab-btn" onclick="setFilter('thesis', this)">🔵 碩博論文</button>
-        <button class="tab-btn" onclick="setFilter('predatory', this)">🔴 掠奪性</button>
-        <button class="tab-btn" onclick="setFilter('qualified', this)">🟢 合格</button>
-        <button class="tab-btn" onclick="setFilter('uncertain', this)">🟡 待確認</button>
+      <div class="control-row-1">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋作者、篇名、年份、出版社、標籤或筆記內容..." oninput="filterAndRender()">
+        
+        <!-- 年份與作者排序選單 -->
+        <div class="sort-box">
+          <label for="sortSelect">排序方式：</label>
+          <select id="sortSelect" class="sort-select" onchange="changeSort()">
+            <option value="year-desc">📅 年份：由新到舊 (最新優先)</option>
+            <option value="year-asc">📅 年份：由舊到新 (年代先後)</option>
+            <option value="author-asc">🔤 作者姓名 (A ➜ Z)</option>
+            <option value="title-asc">📑 文獻標題 (A ➜ Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 分類篩選標籤 -->
+      <div class="control-row-2">
+        <div class="filter-group">
+          <span class="filter-label">品質分類：</span>
+          <button class="tab-btn active" onclick="setQualityFilter('all', this)">全部</button>
+          <button class="tab-btn" onclick="setQualityFilter('thesis', this)">🔵 碩博論文</button>
+          <button class="tab-btn" onclick="setQualityFilter('predatory', this)">🔴 掠奪性</button>
+          <button class="tab-btn" onclick="setQualityFilter('qualified', this)">🟢 合格</button>
+          <button class="tab-btn" onclick="setQualityFilter('uncertain', this)">🟡 待確認</button>
+        </div>
+
+        <div class="filter-group" id="topicFilterGroup">
+          <span class="filter-label">研究主題：</span>
+          <button class="tab-btn active" onclick="setTopicFilter('all', this)">全部主題</button>
+          <button class="tab-btn" onclick="setTopicFilter('DEA', this)">DEA 效率模型</button>
+          <button class="tab-btn" onclick="setTopicFilter('保險', this)">保險業研究</button>
+          <button class="tab-btn" onclick="setTopicFilter('統計', this)">統計分析方法</button>
+        </div>
       </div>
     </div>
 
@@ -440,7 +533,7 @@
         apaHtml: "Bansal, R., & Singh, D. (2021). Efficiency drivers of insurers in GCC: an analysis incorporating company-specific and external environmental variables. <i>Cogent Economics & Finance</i>, <i>9</i>(1), Article 1922179. <a href=\"https://doi.org/10.1080/23322039.2021.1922179\" target=\"_blank\">https://doi.org/10.1080/23322039.2021.1922179</a>",
         apaPlain: "Bansal, R., & Singh, D. (2021). Efficiency drivers of insurers in GCC: an analysis incorporating company-specific and external environmental variables. Cogent Economics & Finance, 9(1), Article 1922179. https://doi.org/10.1080/23322039.2021.1922179",
         summary: "【保險業經營效率與環境變數】\n由 Taylor & Francis 出版，運用兩階段 DEA 探討波斯灣阿拉伯國家 (GCC) 保險業效率驅動因子，同時納入個別公司財務變數與總體外部環境變數之實證分析。",
-        tags: ["保險業效率", "GCC", "環境變數", "Taylor & Francis"]
+        tags: ["保險業效率", "DEA", "環境變數", "Taylor & Francis"]
       },
       {
         id: "ref-tone-2002",
@@ -455,18 +548,6 @@
         tags: ["DEA", "Super-SBM", "超效率", "運籌學", "EJOR"]
       },
       {
-        id: "ref-tone-manual",
-        title: "DEA-Solver Pro Version 16 user's guide",
-        author: "Tone, K.",
-        year: "n.d.",
-        publisher: "SAITECH",
-        category: "qualified", // 綠色
-        apaHtml: "Tone, K. (n.d.). <i>DEA-Solver Pro Version 16 user's guide</i>. SAITECH.",
-        apaPlain: "Tone, K. (n.d.). DEA-Solver Pro Version 16 user's guide. SAITECH.",
-        summary: "【工具軟體操作指南】\nDEA-Solver 官方使用手冊，說明包含 SBM-Undesirable 與負值處理 (Negative Data) 之計算演算法與軟體參數設定。",
-        tags: ["DEA-Solver", "使用手冊", "負值SBM"]
-      },
-      {
         id: "ref-evans-1996",
         title: "Straightforward statistics for the behavioral sciences",
         author: "Evans, J. D.",
@@ -476,12 +557,27 @@
         apaHtml: "Evans, J. D. (1996). <i>Straightforward statistics for the behavioral sciences</i>. Brooks/Cole.",
         apaPlain: "Evans, J. D. (1996). Straightforward statistics for the behavioral sciences. Brooks/Cole.",
         summary: "【相關係數判定標準】\n定義皮爾森相關係數 r 之強度區間：|r| < 0.20 極弱、0.20-0.39 弱相關、0.40-0.59 中等相關、0.60-0.79 強相關、0.80-1.00 極強相關。用於投入產出變數篩選與同向性檢定。",
-        tags: ["統計學", "相關係數判定 (Correlation r)", "行為科學"]
+        tags: ["統計學", "相關係數判定 (Correlation r)", "統計分析"]
+      },
+      {
+        id: "ref-tone-manual",
+        title: "DEA-Solver Pro Version 16 user's guide",
+        author: "Tone, K.",
+        year: "n.d.",
+        publisher: "SAITECH",
+        category: "qualified", // 綠色
+        apaHtml: "Tone, K. (n.d.). <i>DEA-Solver Pro Version 16 user's guide</i>. SAITECH.",
+        apaPlain: "Tone, K. (n.d.). DEA-Solver Pro Version 16 user's guide. SAITECH.",
+        summary: "【工具軟體操作指南】\nDEA-Solver 官方使用手冊，說明包含 SBM-Undesirable 與負值處理 (Negative Data) 之計算演算法與軟體參數設定。",
+        tags: ["DEA-Solver", "DEA", "使用手冊", "負值SBM"]
       }
     ];
 
-    const STORAGE_KEY = 'thesis_master_references_v6';
+    const STORAGE_KEY = 'thesis_master_references_v7';
     let references = [];
+    let currentQualityFilter = 'all';
+    let currentTopicFilter = 'all';
+    let currentSort = 'year-desc'; // 預設由新到舊
 
     function initStorage() {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -495,7 +591,6 @@
         references = [...defaultReferences];
       }
 
-      // 確保核心文獻一定常駐
       defaultReferences.forEach(d => {
         if (!references.some(r => r.id === d.id || r.title.toLowerCase().trim() === d.title.toLowerCase().trim())) {
           references.push(d);
@@ -504,33 +599,107 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(references));
     }
 
-    let currentFilter = 'all';
-
     function saveToStorage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(references));
-      renderList();
+      filterAndRender();
     }
 
-    function setFilter(type, btn) {
-      currentFilter = type;
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    function changeSort() {
+      currentSort = document.getElementById('sortSelect').value;
+      filterAndRender();
+    }
+
+    function setQualityFilter(val, btn) {
+      currentQualityFilter = val;
+      btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      filterReferences();
+      filterAndRender();
     }
 
-    function renderList() {
+    function setTopicFilter(val, btn) {
+      currentTopicFilter = val;
+      btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterAndRender();
+    }
+
+    // 核心排序函數
+    function sortReferences(list, sortType) {
+      return list.sort((a, b) => {
+        // 年份解析 (數字優先，n.d. 排在最後)
+        const parseYear = (y) => {
+          if (!y || y.toLowerCase() === 'n.d.') return -9999;
+          const match = String(y).match(/\d{4}/);
+          return match ? parseInt(match[0], 10) : -9999;
+        };
+
+        const yearA = parseYear(a.year);
+        const yearB = parseYear(b.year);
+
+        if (sortType === 'year-desc') {
+          // 年份新到舊
+          if (yearB !== yearA) return yearB - yearA;
+          return (a.author || '').localeCompare(b.author || '');
+        } else if (sortType === 'year-asc') {
+          // 年份舊到新 (n.d. 放在最後)
+          const ya = yearA === -9999 ? 99999 : yearA;
+          const yb = yearB === -9999 ? 99999 : yearB;
+          if (ya !== yb) return ya - yb;
+          return (a.author || '').localeCompare(b.author || '');
+        } else if (sortType === 'author-asc') {
+          return (a.author || '').localeCompare(b.author || '');
+        } else if (sortType === 'title-asc') {
+          return (a.title || '').localeCompare(b.title || '');
+        }
+        return 0;
+      });
+    }
+
+    // 結合搜尋、篩選與排序之綜合渲染
+    function filterAndRender() {
       const container = document.getElementById('referenceList');
       if (!container) return;
       container.innerHTML = '';
 
-      references.forEach(ref => {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      // 1. 篩選
+      let filtered = references.filter(ref => {
+        // 品質篩選
+        if (currentQualityFilter !== 'all' && ref.category !== currentQualityFilter) {
+          return false;
+        }
+
+        // 主題篩選
+        if (currentTopicFilter !== 'all') {
+          const matchContent = (ref.title + ' ' + (ref.summary || '') + ' ' + (ref.tags ? ref.tags.join(' ') : '')).toLowerCase();
+          if (!matchContent.includes(currentTopicFilter.toLowerCase())) {
+            return false;
+          }
+        }
+
+        // 關鍵字搜尋
+        if (query) {
+          const searchContent = (ref.title + ' ' + ref.author + ' ' + ref.year + ' ' + ref.publisher + ' ' + (ref.summary || '') + ' ' + (ref.tags ? ref.tags.join(' ') : '')).toLowerCase();
+          if (!searchContent.includes(query)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      // 2. 排序
+      filtered = sortReferences(filtered, currentSort);
+
+      // 3. 渲染
+      filtered.forEach(ref => {
         const card = document.createElement('article');
         card.className = `ref-card status-${ref.category}`;
-        card.setAttribute('data-category', ref.category);
-        card.setAttribute('data-search', `${ref.title} ${ref.author} ${ref.year} ${ref.publisher} ${ref.summary || ''} ${ref.tags ? ref.tags.join(' ') : ''}`);
 
         let badgeClass = `badge-${ref.category}`;
         let statusBadgeText = getCategoryBadgeText(ref.category);
+        const displayYear = ref.year && ref.year !== 'n.d.' ? `📅 ${ref.year} 年` : '📅 年份不詳 (n.d.)';
 
         const tagsHtml = ref.tags && ref.tags.length > 0 
           ? ref.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('') 
@@ -541,7 +710,10 @@
         card.innerHTML = `
           <div class="ref-header">
             <h2 class="ref-title">${escapeHtml(ref.title)}</h2>
-            <span class="badge-status ${badgeClass}">${statusBadgeText}</span>
+            <div class="header-badges">
+              <span class="badge-year">${displayYear}</span>
+              <span class="badge-status ${badgeClass}">${statusBadgeText}</span>
+            </div>
           </div>
 
           <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">
@@ -580,8 +752,6 @@
         `;
         container.appendChild(card);
       });
-
-      filterReferences();
     }
 
     function toggleEditNote(id) {
@@ -619,11 +789,9 @@
       }
     }
 
-    // 核心自動判別函數 (支援紅、藍、綠、黃)
     function detectCategoryAndQuality(fullString) {
       const s = fullString.toUpperCase();
 
-      // 1. 掠奪性期刊（紅色）
       if (
         s.includes('SAGE') || 
         s.includes('SEGA') || 
@@ -635,7 +803,6 @@
         return 'predatory';
       }
 
-      // 2. 碩博士論文（藍色）
       if (
         s.includes('DISSERTATION') || 
         s.includes('THESIS') || 
@@ -648,7 +815,6 @@
         return 'thesis';
       }
 
-      // 3. 合格期刊 / 專書權威機構（綠色）
       if (
         s.includes('TAYLOR') ||
         s.includes('FRANCIS') ||
@@ -677,7 +843,6 @@
       return 'uncertain';
     }
 
-    // 將 Crossref author 格式化為標準 APA 7
     function formatAuthors(authorList) {
       if (!authorList || authorList.length === 0) return '未知作者';
       const formatted = authorList.map(a => {
@@ -698,7 +863,6 @@
       return `${formatted.slice(0, 19).join(', ')} ... ${formatted[formatted.length - 1]}`;
     }
 
-    // 點擊新增按鈕處理函數
     async function handleAddReference() {
       const input = document.getElementById('inputTitle').value.trim();
       const summary = document.getElementById('inputSummary').value.trim();
@@ -724,9 +888,7 @@
         let doi = "";
         let category = "uncertain";
 
-        // 清洗輸入標題，準備連網查詢
         let searchTitle = input;
-        // 如果輸入的是整段引用條目 (例如含有 (1996) 等)，萃取出核心標題
         const yearMatch = input.match(/\((\d{4}[a-z]?|n\.d\.)\)/i);
         if (yearMatch) {
           const parts = input.split(yearMatch[0]);
@@ -742,10 +904,9 @@
           }
         }
 
-        // 呼叫 Crossref API 檢索
         const cleanQuery = encodeURIComponent(searchTitle.replace(/[\(\)\[\]]/g, ''));
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000); // 6秒超時
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
 
         try {
           const res = await fetch(`https://api.crossref.org/works?query.bibliographic=${cleanQuery}&rows=1&mailto=academic@example.com`, { signal: controller.signal });
@@ -761,7 +922,6 @@
                 author = formatAuthors(item.author);
               }
 
-              // 擷取年份
               if (item['published-print'] && item['published-print']['date-parts']) {
                 year = String(item['published-print']['date-parts'][0][0]);
               } else if (item['published-online'] && item['published-online']['date-parts']) {
@@ -782,15 +942,12 @@
           console.log('網路查詢超時，採用輸入文字直接建構', netErr);
         }
 
-        // 自動判斷顏色狀態
         category = detectCategoryAndQuality(title + ' ' + journal + ' ' + publisher);
 
-        // 建構標準 APA 7th
         let apaHtml = "";
         let apaPlain = "";
 
         if (journal) {
-          // 期刊論文 APA 7
           let volIssue = volume ? `<i>${volume}</i>` : '';
           if (issue) volIssue += `(${issue})`;
           let pRange = pages ? `, ${pages}` : '';
@@ -799,11 +956,18 @@
           apaHtml = `${escapeHtml(author)} (${year}). ${escapeHtml(title)}. <i>${escapeHtml(journal)}</i>${volIssue ? ', ' + volIssue : ''}${pRange}.${doiLink}`;
           apaPlain = `${author} (${year}). ${title}. ${journal}${volume ? ', ' + volume : ''}${issue ? '(' + issue + ')' : ''}${pages ? ', ' + pages : ''}.${doi ? ' ' + doi : ''}`;
         } else {
-          // 專書 APA 7（去除出版地，只留出版社）
           let pubClean = publisher.replace(/(?:[A-Z][a-zA-Z\s]+,\s*[A-Z]{2}:|[A-Z][a-zA-Z\s]+:)\s*/, '');
           apaHtml = `${escapeHtml(author)} (${year}). <i>${escapeHtml(title)}</i>. ${escapeHtml(pubClean || '學術出版')}.${doi ? ' ' + doi : ''}`;
           apaPlain = `${author} (${year}). ${title}. ${pubClean || '學術出版'}.${doi ? ' ' + doi : ''}`;
         }
+
+        // 自動推斷相關主題標籤
+        const autoTags = [];
+        const fullContent = (title + ' ' + summary + ' ' + journal).toUpperCase();
+        if (fullContent.includes('DEA') || fullContent.includes('ENVELOPMENT') || fullContent.includes('SLACKS')) autoTags.push('DEA');
+        if (fullContent.includes('INSUR') || fullContent.includes('保險')) autoTags.push('保險');
+        if (fullContent.includes('STATISTIC') || fullContent.includes('CORRELATION') || fullContent.includes('統計') || fullContent.includes('相關係數')) autoTags.push('統計');
+        if (autoTags.length === 0) autoTags.push('已收錄');
 
         const newRef = {
           id: "ref-" + Date.now(),
@@ -815,7 +979,7 @@
           apaHtml: apaHtml,
           apaPlain: apaPlain,
           summary: summary,
-          tags: ["已收錄", journal || publisher || "學術期刊"]
+          tags: autoTags
         };
 
         references.unshift(newRef);
@@ -838,25 +1002,6 @@
       references = references.filter(r => r.id !== id);
       saveToStorage();
       showToast('已刪除文獻');
-    }
-
-    function filterReferences() {
-      const q = document.getElementById('searchInput').value.toLowerCase().trim();
-      const cards = document.querySelectorAll('.ref-card');
-
-      cards.forEach(card => {
-        const cat = card.getAttribute('data-category');
-        const search = card.getAttribute('data-search').toLowerCase();
-
-        const matchCat = (currentFilter === 'all') || (cat === currentFilter);
-        const matchSearch = search.includes(q);
-
-        if (matchCat && matchSearch) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
-      });
     }
 
     function copyCitation(text) {
@@ -893,7 +1038,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       initStorage();
-      renderList();
+      filterAndRender();
     });
   </script>
 </body>
