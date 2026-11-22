@@ -914,7 +914,7 @@
 
     async function handleAddReference() {
       const input = document.getElementById('inputTitle').value.trim();
-      const summary = document.getElementById('inputSummary').value.trim();
+      const userSummary = document.getElementById('inputSummary').value.trim();
 
       if (!input) {
         alert('請輸入文章名稱或引用條目！');
@@ -936,6 +936,7 @@
         let pages = "";
         let doi = "";
         let category = "uncertain";
+        let crossrefAbstract = ""; // Crossref 摘要
 
         let searchTitle = input;
         const yearMatch = input.match(/\((\d{4}[a-z]?|n\.d\.)\)/i);
@@ -955,7 +956,7 @@
 
         const cleanQuery = encodeURIComponent(searchTitle.replace(/[\(\)\[\]]/g, ''));
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
 
         try {
           const res = await fetch(`https://api.crossref.org/works?query.bibliographic=${cleanQuery}&rows=1&mailto=academic@example.com`, { signal: controller.signal });
@@ -966,7 +967,7 @@
             if (data.message && data.message.items && data.message.items.length > 0) {
               const item = data.message.items[0];
               title = (item.title && item.title[0]) ? item.title[0] : searchTitle;
-              
+
               if (item.author && item.author.length > 0) {
                 author = formatAuthors(item.author);
               }
@@ -985,6 +986,15 @@
               issue = item.issue || '';
               pages = item.page || (item['article-number'] ? `Article ${item['article-number']}` : '');
               doi = item.DOI ? `https://doi.org/${item.DOI}` : '';
+
+              // 抓取 abstract（部分期刊有提供）
+              if (item.abstract) {
+                crossrefAbstract = item.abstract
+                  .replace(/<[^>]+>/g, ' ')   // 移除 JATS XML 標記
+                  .replace(/\s+/g, ' ')
+                  .trim()
+                  .substring(0, 500);
+              }
             }
           }
         } catch(netErr) {
@@ -1011,12 +1021,29 @@
           apaPlain = `${author} (${year}). ${title}. ${pubClean || '學術出版'}.${doi ? ' ' + doi : ''}`;
         }
 
+        // ── 自動生成文獻說明 ──────────────────────────────────────────
+        // 優先順序：1. 使用者手動輸入 → 2. Crossref 摘要整理 → 3. 關鍵字自動生成
+        let autoSummary = userSummary; // 保留使用者輸入
+
+        if (!autoSummary) {
+          if (crossrefAbstract) {
+            // 有 Crossref 摘要：整理後作為說明（標記來源）
+            autoSummary = `【原文摘要（Crossref）】\n${crossrefAbstract}`;
+          } else {
+            // 無摘要：依標題關鍵字自動生成提示說明
+            autoSummary = generateAutoSummary(title, journal, publisher, year, category);
+          }
+        }
+        // ─────────────────────────────────────────────────────────────
+
         // 自動推斷相關主題標籤
         const autoTags = [];
-        const fullContent = (title + ' ' + summary + ' ' + journal).toUpperCase();
-        if (fullContent.includes('DEA') || fullContent.includes('ENVELOPMENT') || fullContent.includes('SLACKS')) autoTags.push('DEA');
-        if (fullContent.includes('INSUR') || fullContent.includes('保險')) autoTags.push('保險');
-        if (fullContent.includes('STATISTIC') || fullContent.includes('CORRELATION') || fullContent.includes('統計') || fullContent.includes('相關係數')) autoTags.push('統計');
+        const fullContent = (title + ' ' + autoSummary + ' ' + journal).toUpperCase();
+        if (fullContent.includes('DEA') || fullContent.includes('ENVELOPMENT') || fullContent.includes('SLACKS') || fullContent.includes('EFFICIENCY')) autoTags.push('DEA');
+        if (fullContent.includes('INSUR') || fullContent.includes('保險') || fullContent.includes('LIFE INSURANCE') || fullContent.includes('HEALTH INSURANCE')) autoTags.push('保險');
+        if (fullContent.includes('STATISTIC') || fullContent.includes('CORRELATION') || fullContent.includes('統計') || fullContent.includes('相關係數') || fullContent.includes('REGRESSION')) autoTags.push('統計');
+        if (fullContent.includes('SUPER') || fullContent.includes('超效率')) autoTags.push('超效率SBM');
+        if (fullContent.includes('SBM') || fullContent.includes('SLACKS-BASED')) autoTags.push('SBM');
         if (autoTags.length === 0) autoTags.push('已收錄');
 
         const newRef = {
@@ -1028,7 +1055,7 @@
           category: category,
           apaHtml: apaHtml,
           apaPlain: apaPlain,
-          summary: summary,
+          summary: autoSummary,
           tags: autoTags
         };
 
@@ -1045,6 +1072,83 @@
         btn.textContent = '✨ 自動分析並依顏色加入 (APA 7)';
         btn.disabled = false;
       }
+    }
+
+    // 依標題/期刊關鍵字自動生成文獻說明（無摘要時的備援）
+    function generateAutoSummary(title, journal, publisher, year, category) {
+      const t = title.toUpperCase();
+      const j = (journal + ' ' + publisher).toUpperCase();
+      const lines = [];
+
+      // 一、判斷主要研究方法/主題
+      if (t.includes('DEA') || t.includes('DATA ENVELOPMENT') || t.includes('ENVELOPMENT ANALYSIS')) {
+        lines.push('【研究方法】資料包絡分析法（DEA）相關研究。');
+      }
+      if (t.includes('SBM') || t.includes('SLACKS-BASED') || t.includes('SLACKS BASED') || t.includes('SUPER-EFFICIENCY') || t.includes('SUPER EFFICIENCY')) {
+        lines.push('【模型】涉及 SBM（Slacks-Based Measure）或超效率模型。');
+      }
+      if (t.includes('EFFICIENCY') && !t.includes('SBM')) {
+        lines.push('【主題】效率評估相關研究，可能涉及技術效率或規模效率分析。');
+      }
+      if (t.includes('INSUR') || t.includes('LIFE INSURANCE') || t.includes('NON-LIFE') || t.includes('HEALTH INSURANCE')) {
+        lines.push('【產業】保險業效率或績效研究。');
+      }
+      if (t.includes('STATISTIC') || t.includes('REGRESSION') || t.includes('CORRELATION')) {
+        lines.push('【方法】統計分析相關（迴歸/相關係數/推論統計等）。');
+      }
+      if (t.includes('MALMQUIST') || t.includes('PRODUCTIVITY')) {
+        lines.push('【指標】涉及 Malmquist 生產力指數或全要素生產力（TFP）分析。');
+      }
+      if (t.includes('TOBIT') || t.includes('SECOND STAGE') || t.includes('SECOND-STAGE')) {
+        lines.push('【二階段分析】使用 Tobit 模型或二階段迴歸探討效率影響因素。');
+      }
+      if (t.includes('BOOTSTRAPP') || t.includes('SIMAR') || t.includes('WILSON')) {
+        lines.push('【統計推論】採用 Bootstrap 方法對 DEA 效率值進行統計推論。');
+      }
+      if (t.includes('UNDESIRABLE') || t.includes('BAD OUTPUT') || t.includes('POLLUTION')) {
+        lines.push('【非期望產出】含非期望產出（壞產出）的 DEA 模型。');
+      }
+      if (t.includes('NETWORK') || t.includes('TWO-STAGE') || t.includes('TWO STAGE')) {
+        lines.push('【結構】網絡 DEA 或兩階段模型，考慮中間產品或子流程。');
+      }
+      if (t.includes('WINDOW') || t.includes('PANEL')) {
+        lines.push('【縱斷面】Window DEA 或 Panel Data 方法，分析跨期效率變動。');
+      }
+      if (t.includes('ENVIRONMENTAL') || t.includes('GREEN') || t.includes('CARBON') || t.includes('CO2')) {
+        lines.push('【環境績效】涵蓋環境因素或碳排放的效率研究。');
+      }
+      if (t.includes('HOSPITAL') || t.includes('HEALTHCARE') || t.includes('MEDICAL')) {
+        lines.push('【產業】醫療或醫院效率評估研究。');
+      }
+      if (t.includes('BANK') || t.includes('FINANCIAL') || t.includes('CREDIT')) {
+        lines.push('【產業】銀行或金融業效率研究。');
+      }
+
+      // 二、來源資訊
+      if (journal) {
+        lines.push(`【來源期刊】${journal}（${year || 'n.d.'}年）。`);
+      } else if (publisher) {
+        lines.push(`【出版資訊】由 ${publisher} 出版（${year || 'n.d.'}年）。`);
+      }
+
+      // 三、類型提示
+      if (category === 'predatory') {
+        lines.push('⚠️【注意】此文獻來源期刊已被標記為掠奪性期刊，建議確認是否納入論文引用。');
+      } else if (category === 'thesis') {
+        lines.push('【類型】碩博士學位論文，可參考其研究設計與文獻回顧架構。');
+      } else if (category === 'uncertain') {
+        lines.push('【待確認】期刊品質尚待核實，建議至 Beall\'s List 或 SSCI/SCI 資料庫確認。');
+      }
+
+      // 四、備用提示
+      if (lines.length === 0) {
+        lines.push(`【${title}】`);
+        lines.push('（系統未能自動辨識主題，請手動點擊「編輯備註」補充此篇文獻的論文用途。）');
+      } else {
+        lines.push('\n（點擊「編輯備註」可補充更詳細的論文用途說明）');
+      }
+
+      return lines.join('\n');
     }
 
     function deleteReference(id) {
