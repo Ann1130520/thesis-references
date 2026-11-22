@@ -377,7 +377,7 @@
   <div class="container">
     <header>
       <h1>📚 碩論參考文獻與品質紀錄庫</h1>
-      <p>輸入篇名自動辨識出處・自動判別文獻類型與色彩・標準 APA 7th 格式生成</p>
+      <p>輸入篇名自動解析出處・自動判別文獻類型與色彩・標準 APA 7th 格式生成</p>
     </header>
 
     <!-- 顏色圖例 -->
@@ -395,12 +395,12 @@
       
       <div class="form-group">
         <label for="inputTitle">文章名稱 / 論文題目 / 原始條目 / DOI：</label>
-        <textarea id="inputTitle" rows="2" placeholder="請直接貼上文章名稱或已有引用條目，例如：Evans, J. D. (1996). Straightforward statistics for the behavioral sciences. Pacific Grove, CA: Brooks/Cole."></textarea>
+        <textarea id="inputTitle" rows="2" placeholder="請直接貼上文章名稱或已有引用條目，例如：Efficiency drivers of insurers in GCC: an analysis incorporating company-specific and external environmental variables"></textarea>
       </div>
 
       <div class="form-group">
         <label for="inputSummary">📝 這篇文獻在講什麼 / 備註筆記（可選，之後隨時能點擊編輯）：</label>
-        <input type="text" id="inputSummary" placeholder="例如：提出皮爾森相關係數強度分級標準，用於投入產出變數篩選與檢定。">
+        <input type="text" id="inputSummary" placeholder="例如：探討波斯灣六國 (GCC) 保險業效率驅動因素，結合公司特性與外部環境變數之分析。">
       </div>
 
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
@@ -431,13 +431,25 @@
     // 永久預設核心資料庫（重新整理絕對常駐）
     const defaultReferences = [
       {
+        id: "ref-bansal-2021",
+        title: "Efficiency drivers of insurers in GCC: an analysis incorporating company-specific and external environmental variables",
+        author: "Bansal, R., & Singh, D.",
+        year: "2021",
+        publisher: "Cogent Economics & Finance",
+        category: "qualified", // 綠色
+        apaHtml: "Bansal, R., & Singh, D. (2021). Efficiency drivers of insurers in GCC: an analysis incorporating company-specific and external environmental variables. <i>Cogent Economics & Finance</i>, <i>9</i>(1), Article 1922179. <a href=\"https://doi.org/10.1080/23322039.2021.1922179\" target=\"_blank\">https://doi.org/10.1080/23322039.2021.1922179</a>",
+        apaPlain: "Bansal, R., & Singh, D. (2021). Efficiency drivers of insurers in GCC: an analysis incorporating company-specific and external environmental variables. Cogent Economics & Finance, 9(1), Article 1922179. https://doi.org/10.1080/23322039.2021.1922179",
+        summary: "【保險業經營效率與環境變數】\n由 Taylor & Francis 出版，運用兩階段 DEA 探討波斯灣阿拉伯國家 (GCC) 保險業效率驅動因子，同時納入個別公司財務變數與總體外部環境變數之實證分析。",
+        tags: ["保險業效率", "GCC", "環境變數", "Taylor & Francis"]
+      },
+      {
         id: "ref-tone-2002",
         title: "A slacks-based measure of super-efficiency in data envelopment analysis",
         author: "Tone, K.",
         year: "2002",
         publisher: "European Journal of Operational Research",
         category: "qualified", // 綠色
-        apaHtml: "Tone, K. (2002). A slacks-based measure of super-efficiency in data envelopment analysis. <i>European Journal of Operational Research</i>, <i>143</i>(1), 32-41. https://doi.org/10.1016/S0377-2217(01)00324-1",
+        apaHtml: "Tone, K. (2002). A slacks-based measure of super-efficiency in data envelopment analysis. <i>European Journal of Operational Research</i>, <i>143</i>(1), 32-41. <a href=\"https://doi.org/10.1016/S0377-2217(01)00324-1\" target=\"_blank\">https://doi.org/10.1016/S0377-2217(01)00324-1</a>",
         apaPlain: "Tone, K. (2002). A slacks-based measure of super-efficiency in data envelopment analysis. European Journal of Operational Research, 143(1), 32-41. https://doi.org/10.1016/S0377-2217(01)00324-1",
         summary: "【碩論核心文獻】\n提出超效率差額變數模式 (Super-SBM)，解決有效決策單位 (DMU 效率值為 1) 無法進一步區分優劣次序之問題，並維持非徑向 (Non-radial) 與非導向 (Non-oriented) 之特性。",
         tags: ["DEA", "Super-SBM", "超效率", "運籌學", "EJOR"]
@@ -468,7 +480,7 @@
       }
     ];
 
-    const STORAGE_KEY = 'thesis_master_references_v5';
+    const STORAGE_KEY = 'thesis_master_references_v6';
     let references = [];
 
     function initStorage() {
@@ -483,7 +495,7 @@
         references = [...defaultReferences];
       }
 
-      // 確保 3 篇核心文獻一定在清單內
+      // 確保核心文獻一定常駐
       defaultReferences.forEach(d => {
         if (!references.some(r => r.id === d.id || r.title.toLowerCase().trim() === d.title.toLowerCase().trim())) {
           references.push(d);
@@ -616,8 +628,6 @@
         s.includes('SAGE') || 
         s.includes('SEGA') || 
         s.includes('HINDAWI') || 
-        s.includes('MDPI') ||
-        s.includes('FRONTIERS') ||
         s.includes('OMICS') || 
         s.includes('ACADEMIC JOURNALS') ||
         s.includes('PREDATORY')
@@ -640,6 +650,9 @@
 
       // 3. 合格期刊 / 專書權威機構（綠色）
       if (
+        s.includes('TAYLOR') ||
+        s.includes('FRANCIS') ||
+        s.includes('COGENT') ||
         s.includes('ELSEVIER') || 
         s.includes('SPRINGER') || 
         s.includes('WILEY') || 
@@ -654,89 +667,35 @@
         s.includes('BROOKS/COLE') ||
         s.includes('BROOKS') ||
         s.includes('SAITECH') ||
-        s.includes('APPLIED') ||
-        s.includes('JOURNAL')
+        s.includes('JOURNAL') ||
+        s.includes('FINANCE') ||
+        s.includes('ECONOMICS')
       ) {
         return 'qualified';
       }
 
-      // 4. 其他暫定
       return 'uncertain';
     }
 
-    // 強大的本機智慧解析引擎（直接將輸入解析為標準 APA 7）
-    function parseAndFormatApa7(rawInput) {
-      let str = rawInput.trim();
-      let author = "未知作者";
-      let year = "n.d.";
-      let title = str;
-      let publisher = "學術文獻";
-      let isBook = true;
-
-      // 1. 嘗試提取年份 (YYYY)
-      const yearMatch = str.match(/\((\d{4}[a-z]?|n\.d\.)\)/i);
-      if (yearMatch) {
-        year = yearMatch[1];
-        const parts = str.split(yearMatch[0]);
-        author = parts[0].trim().replace(/\.$/, '');
-        
-        let remainder = parts.slice(1).join(yearMatch[0]).trim().replace(/^\.\s*/, '');
-        
-        // 檢查 APA 6th 的出版地格式 "City, ST: Publisher" 或 "City: Publisher"
-        // 例如 "Pacific Grove, CA: Brooks/Cole."
-        const locMatch = remainder.match(/(?:[A-Z][a-zA-Z\s]+,\s*[A-Z]{2}:|[A-Z][a-zA-Z\s]+:)\s*([^.]+)/);
-        if (locMatch) {
-          // 專書：去除出版地點，直接留下 Publisher
-          publisher = locMatch[1].trim();
-          title = remainder.substring(0, locMatch.index).trim().replace(/\.$/, '');
-          isBook = true;
-        } else {
-          // 看最後是否有句號分隔 Publisher
-          const remParts = remainder.split('.');
-          if (remParts.length >= 2) {
-            title = remParts[0].trim();
-            publisher = remParts.slice(1).join('.').trim().replace(/\.$/, '');
-          } else {
-            title = remainder.replace(/\.$/, '');
-          }
+    // 將 Crossref author 格式化為標準 APA 7
+    function formatAuthors(authorList) {
+      if (!authorList || authorList.length === 0) return '未知作者';
+      const formatted = authorList.map(a => {
+        const family = a.family || '';
+        let initials = '';
+        if (a.given) {
+          initials = a.given.split(/[\s-]+/).map(p => p[0] ? p[0] + '.' : '').join(' ');
         }
-      } else {
-        // 沒有括號年份時，檢查標題與關鍵字
-        title = str;
+        return `${family}${initials ? ', ' + initials : ''}`;
+      }).filter(Boolean);
+
+      if (formatted.length === 0) return '未知作者';
+      if (formatted.length === 1) return formatted[0];
+      if (formatted.length === 2) return `${formatted[0]}, & ${formatted[1]}`;
+      if (formatted.length <= 20) {
+        return `${formatted.slice(0, -1).join(', ')}, & ${formatted[formatted.length - 1]}`;
       }
-
-      // 自動檢查是否為期刊論文
-      if (str.includes('Journal') || str.includes('vol.') || str.includes('pp.') || str.includes('http') || str.includes('doi')) {
-        isBook = false;
-      }
-
-      // 判定品質顏色
-      const category = detectCategoryAndQuality(rawInput + ' ' + publisher);
-
-      // 產出 APA 7 格式
-      let apaHtml = "";
-      let apaPlain = "";
-
-      if (isBook) {
-        // 專書 APA 7 規範：書名斜體，無出版地，直接接出版社
-        apaHtml = `${escapeHtml(author)} (${year}). <i>${escapeHtml(title)}</i>. ${escapeHtml(publisher)}.`;
-        apaPlain = `${author} (${year}). ${title}. ${publisher}.`;
-      } else {
-        // 期刊 APA 7 規範：篇名不斜體，期刊名斜體
-        apaHtml = `${escapeHtml(author)} (${year}). ${escapeHtml(title)}. <i>${escapeHtml(publisher)}</i>.`;
-        apaPlain = `${author} (${year}). ${title}. ${publisher}.`;
-      }
-
-      return {
-        id: "ref-" + Date.now(),
-        title: title,
-        author: author,
-        year: year,
-        publisher: publisher,
-        category: category,
-        apaHtml: apaHtml,
-        apaPlain: apaPlain
-      };
+      return `${formatted.slice(0, 19).join(', ')} ... ${formatted[formatted.length - 1]}`;
     }
 
     // 點擊新增按鈕處理函數
@@ -750,21 +709,45 @@
       }
 
       const btn = document.getElementById('btnAdd');
-      btn.textContent = '⚡ 智慧分析中...';
+      btn.textContent = '⚡ 國際學術庫檢索中...';
       btn.disabled = true;
 
       try {
-        // 1. 本地智慧解析優先產生可靠 APA 7
-        const parsed = parseAndFormatApa7(input);
-        parsed.summary = summary;
-        parsed.tags = ["已收錄", parsed.publisher];
+        let title = input;
+        let author = "未知作者";
+        let year = "n.d.";
+        let journal = "";
+        let publisher = "";
+        let volume = "";
+        let issue = "";
+        let pages = "";
+        let doi = "";
+        let category = "uncertain";
 
-        // 2. 嘗試非同步連網 Crossref 補強（若有更好的聯網數據）
+        // 清洗輸入標題，準備連網查詢
+        let searchTitle = input;
+        // 如果輸入的是整段引用條目 (例如含有 (1996) 等)，萃取出核心標題
+        const yearMatch = input.match(/\((\d{4}[a-z]?|n\.d\.)\)/i);
+        if (yearMatch) {
+          const parts = input.split(yearMatch[0]);
+          author = parts[0].trim().replace(/\.$/, '');
+          year = yearMatch[1];
+          let rest = parts.slice(1).join(yearMatch[0]).trim().replace(/^\.\s*/, '');
+          const dotIdx = rest.indexOf('.');
+          if (dotIdx > 0) {
+            searchTitle = rest.substring(0, dotIdx).trim();
+            publisher = rest.substring(dotIdx + 1).trim().replace(/\.$/, '');
+          } else {
+            searchTitle = rest;
+          }
+        }
+
+        // 呼叫 Crossref API 檢索
+        const cleanQuery = encodeURIComponent(searchTitle.replace(/[\(\)\[\]]/g, ''));
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6000); // 6秒超時
+
         try {
-          const cleanQuery = encodeURIComponent(parsed.title.replace(/[\(\)\[\]]/g, ''));
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3500); // 3.5秒超時保護
-
           const res = await fetch(`https://api.crossref.org/works?query.bibliographic=${cleanQuery}&rows=1&mailto=academic@example.com`, { signal: controller.signal });
           clearTimeout(timeoutId);
 
@@ -772,35 +755,75 @@
             const data = await res.json();
             if (data.message && data.message.items && data.message.items.length > 0) {
               const item = data.message.items[0];
-              const netTitle = item.title && item.title[0] ? item.title[0] : '';
+              title = (item.title && item.title[0]) ? item.title[0] : searchTitle;
               
-              // 若網路檢索題目高度吻合，且包含期刊與DOI，補充期刊卷期資訊
-              if (netTitle && item['container-title'] && item['container-title'][0]) {
-                const journal = item['container-title'][0];
-                const vol = item.volume ? `<i>${item.volume}</i>` : '';
-                const iss = item.issue ? `(${item.issue})` : '';
-                const p = item.page ? `, ${item.page}` : '';
-                const doi = item.DOI ? ` https://doi.org/${item.DOI}` : '';
-                
-                // 重新判定是否為 SAGE / 掠奪性
-                parsed.category = detectCategoryAndQuality(journal + ' ' + (item.publisher || ''));
-                parsed.publisher = journal;
-                parsed.apaHtml = `${escapeHtml(parsed.author)} (${parsed.year}). ${escapeHtml(netTitle)}. <i>${escapeHtml(journal)}</i>${vol ? ', ' + vol : ''}${iss}${p}.${doi ? ` <a href="https://doi.org/${item.DOI}" target="_blank">${doi}</a>` : ''}`;
-                parsed.apaPlain = `${parsed.author} (${parsed.year}). ${netTitle}. ${journal}${item.volume ? ', ' + item.volume : ''}${iss}${p}.${doi}`;
+              if (item.author && item.author.length > 0) {
+                author = formatAuthors(item.author);
               }
+
+              // 擷取年份
+              if (item['published-print'] && item['published-print']['date-parts']) {
+                year = String(item['published-print']['date-parts'][0][0]);
+              } else if (item['published-online'] && item['published-online']['date-parts']) {
+                year = String(item['published-online']['date-parts'][0][0]);
+              } else if (item.issued && item.issued['date-parts']) {
+                year = String(item.issued['date-parts'][0][0]);
+              }
+
+              journal = (item['container-title'] && item['container-title'][0]) ? item['container-title'][0].replace(/&amp;/g, '&') : '';
+              publisher = item.publisher || '';
+              volume = item.volume || '';
+              issue = item.issue || '';
+              pages = item.page || (item['article-number'] ? `Article ${item['article-number']}` : '');
+              doi = item.DOI ? `https://doi.org/${item.DOI}` : '';
             }
           }
         } catch(netErr) {
-          console.log('網路查詢超時或跳過，採用本地精準解析', netErr);
+          console.log('網路查詢超時，採用輸入文字直接建構', netErr);
         }
 
-        // 寫入並保存
-        references.unshift(parsed);
+        // 自動判斷顏色狀態
+        category = detectCategoryAndQuality(title + ' ' + journal + ' ' + publisher);
+
+        // 建構標準 APA 7th
+        let apaHtml = "";
+        let apaPlain = "";
+
+        if (journal) {
+          // 期刊論文 APA 7
+          let volIssue = volume ? `<i>${volume}</i>` : '';
+          if (issue) volIssue += `(${issue})`;
+          let pRange = pages ? `, ${pages}` : '';
+          let doiLink = doi ? ` <a href="${doi}" target="_blank">${doi}</a>` : '';
+
+          apaHtml = `${escapeHtml(author)} (${year}). ${escapeHtml(title)}. <i>${escapeHtml(journal)}</i>${volIssue ? ', ' + volIssue : ''}${pRange}.${doiLink}`;
+          apaPlain = `${author} (${year}). ${title}. ${journal}${volume ? ', ' + volume : ''}${issue ? '(' + issue + ')' : ''}${pages ? ', ' + pages : ''}.${doi ? ' ' + doi : ''}`;
+        } else {
+          // 專書 APA 7（去除出版地，只留出版社）
+          let pubClean = publisher.replace(/(?:[A-Z][a-zA-Z\s]+,\s*[A-Z]{2}:|[A-Z][a-zA-Z\s]+:)\s*/, '');
+          apaHtml = `${escapeHtml(author)} (${year}). <i>${escapeHtml(title)}</i>. ${escapeHtml(pubClean || '學術出版')}.${doi ? ' ' + doi : ''}`;
+          apaPlain = `${author} (${year}). ${title}. ${pubClean || '學術出版'}.${doi ? ' ' + doi : ''}`;
+        }
+
+        const newRef = {
+          id: "ref-" + Date.now(),
+          title: title,
+          author: author,
+          year: year,
+          publisher: journal || publisher || '學術文獻',
+          category: category,
+          apaHtml: apaHtml,
+          apaPlain: apaPlain,
+          summary: summary,
+          tags: ["已收錄", journal || publisher || "學術期刊"]
+        };
+
+        references.unshift(newRef);
         saveToStorage();
 
         document.getElementById('inputTitle').value = '';
         document.getElementById('inputSummary').value = '';
-        showToast('🎉 文獻已成功加入並套用 APA 7！');
+        showToast('🎉 文獻已自動查證並加入！');
       } catch (err) {
         console.error('新增失敗', err);
         alert('加入失敗：' + err.message);
@@ -868,7 +891,6 @@
       return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    // 啟動初始化
     document.addEventListener('DOMContentLoaded', () => {
       initStorage();
       renderList();
